@@ -127,6 +127,7 @@ public class MainClass {
 				String appedDateInfo = dateFormat.format(date);
 				String imgFileName = appedDateInfo + count + "_"
 						+ uri.substring(uri.lastIndexOf("/") + 1);
+				count++;
 				if (uri.contains("http")) {
 					// 直接URL。loadImage（）
 					saveUrlAs(uri, "C:/Img/" + imgFileName);
@@ -139,7 +140,6 @@ public class MainClass {
 						saveUrlAs(baseUrl + uri, "C:/Img/" + imgFileName);
 				}
 			}
-			count++;
 		}
 	}
 	public static boolean saveUrlAs(String fileUrl, String savePath)/* fileUrl网络资源地址 */
