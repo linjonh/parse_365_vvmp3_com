@@ -19,7 +19,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class MainClass {
-
+	private static int count = 1;
 	public MainClass() {
 		// TODO Auto-generated constructor stub
 	}
@@ -104,7 +104,7 @@ public class MainClass {
 	 */
 	public static void parseAndDownloadImg(String baseUrl, HashMap<String, String> imgNameUrl,
 			Iterator<String> iterator) throws IOException {
-		int count = 1;
+
 		while (iterator.hasNext()) {
 			String imgName = iterator.next();
 			String imgUrl = imgNameUrl.get(imgName);
@@ -127,17 +127,20 @@ public class MainClass {
 				String appedDateInfo = dateFormat.format(date);
 				String imgFileName = appedDateInfo + count + "_"
 						+ uri.substring(uri.lastIndexOf("/") + 1);
-				count++;
+
 				if (uri.contains("http")) {
 					// Ö±½ÓURL¡£loadImage£¨£©
 					saveUrlAs(uri, "C:/Img/" + imgFileName);
+					count++;
 				} else {
 					if (baseUrl.endsWith("/"))
 						baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/"));
 					if (imgFileName.endsWith("fengexian.gif"))
 						continue;
-					else
+					else {
 						saveUrlAs(baseUrl + uri, "C:/Img/" + imgFileName);
+						count++;
+					}
 				}
 			}
 		}
