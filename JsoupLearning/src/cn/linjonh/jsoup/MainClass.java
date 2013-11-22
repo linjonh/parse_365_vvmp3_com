@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +17,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-
 
 public class MainClass {
 
@@ -31,10 +30,40 @@ public class MainClass {
 	 */
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		String html = "<html><head><title>First parse</title></head>"
-				+ "<body><p>Parsed HTML into a doc.</p></body></html>";
-		Document mainHtmDoc = // Jsoup.parse(html);
-		Jsoup.connect("http://365.vvmp3.com/").get();
+		// touBai();
+		photoSelf();
+
+	}
+	public static void photoSelf() throws IOException {
+		Document doc = Jsoup.connect("http://365.vvmp3.com/xtu").get();
+		Elements lists = doc.select("a[href]");
+		ArrayList<HashMap<String, String>> tempList = new ArrayList<HashMap<String, String>>();
+
+		for (int i = 1; i < lists.size(); i++) {// i初始为1过滤掉第一个i=0的"返回首页"元素
+			Element aElement = lists.get(i);
+			HashMap<String, String> map = new HashMap<String, String>();
+			String key = aElement.text();
+			String value = aElement.attr("href");
+			String baseUrl = aElement.baseUri();
+			map.put(key, baseUrl + value);
+			tempList.add(map);
+		}
+		for (HashMap<String, String> m : tempList) {
+			Iterator<String> iterator = m.keySet().iterator();
+			// while (iterator.hasNext()) {
+			// String imgTitle = iterator.next();
+			// }
+			parseAndDownloadImg("http://365.vvmp3.com/", m, iterator);
+		}
+		// System.out.println(tempList);
+
+
+	}
+	/**
+	 * @throws IOException
+	 */
+	public static void touBai() throws IOException {
+		Document mainHtmDoc = Jsoup.connect("http://365.vvmp3.com/").get();
 		Elements tables = mainHtmDoc.getElementsByTag("table");
 
 		Elements hrefs = tables.get(2).select("a[href]");
@@ -58,7 +87,23 @@ public class MainClass {
 			// System.out.println(aText + ":" + aBaseUrl + aHref);
 			imgNameUrl.put(aText, aBaseUrl + aHref);
 		}
-		Iterator<String> iterator=imgNameUrl.keySet().iterator();
+		Iterator<String> iterator = imgNameUrl.keySet().iterator();
+
+		parseAndDownloadImg(baseUrl, imgNameUrl, iterator);
+		// System.out.println(hrefs.toString());
+		// System.out.println(relativeURL);
+		// System.out.println(baseUrl);
+		// System.out.println(imgTables);
+	}
+
+	/**
+	 * @param baseUrl
+	 * @param imgNameUrl
+	 * @param iterator
+	 * @throws IOException
+	 */
+	public static void parseAndDownloadImg(String baseUrl, HashMap<String, String> imgNameUrl,
+			Iterator<String> iterator) throws IOException {
 		int count = 1;
 		while (iterator.hasNext()) {
 			String imgName = iterator.next();
@@ -67,8 +112,12 @@ public class MainClass {
 			 * 解析某条标题图片集
 			 */
 			Document aImgdocument = Jsoup.connect(imgUrl).get();
-			for (Element imgElement : aImgdocument.select("img[src]")) {
-				// 跳过第0个img[src]，以为这是个html头条广告
+			Elements lists =aImgdocument.select("img[src]");
+			/*
+			 * i初始为1过滤掉第一个i=0的"html_title图片"元素 ,跳过第0个img[src]，因为这是个html头条广告
+			 */
+			for (int i = 1; i < lists.size(); i++) {
+				Element imgElement = lists.get(i);
 				String uri = imgElement.attr("src");// 图片地址，有些事该网站的相对地址，有些是其他网站的绝对地址，所以要判断
 				// System.out.println(aImgdocument.toString());
 				// System.out.println(imgElement.toString());
@@ -82,19 +131,16 @@ public class MainClass {
 					// 直接URL。loadImage（）
 					saveUrlAs(uri, "C:/Img/" + imgFileName);
 				} else {
-					saveUrlAs(baseUrl + uri, "C:/Img/" + imgFileName);
+					if (baseUrl.endsWith("/"))
+						baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/"));
+					if (imgFileName.endsWith("fengexian.gif"))
+						continue;
+					else
+						saveUrlAs(baseUrl + uri, "C:/Img/" + imgFileName);
 				}
 			}
 			count++;
 		}
-		// System.out.println(hrefs.toString());
-		// System.out.println(relativeURL);
-		// System.out.println(baseUrl);
-		// System.out.println(imgTables);
-		
-
-
-
 	}
 	public static boolean saveUrlAs(String fileUrl, String savePath)/* fileUrl网络资源地址 */
 	{
