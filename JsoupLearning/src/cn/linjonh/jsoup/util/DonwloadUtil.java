@@ -1,4 +1,4 @@
-package cn.linjonh.jsoup;
+package cn.linjonh.jsoup.util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DonwloadImg {
+public class DonwloadUtil {
 
 	public static boolean DonwloadImg(String fileUrl, String savePath, String pageIndicate)/* fileUrlÍøÂç×ÊÔ´µØÖ· */
 	{

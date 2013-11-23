@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
+import cn.linjonh.jsoup.util.DonwloadUtil;
 
 /**
  * @author linjonh
@@ -174,7 +175,7 @@ public class CcrtYaZhou {
 
 
 			String fileName = ImgName + fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-			DonwloadImg.DonwloadImg(fileUrl, "C:/ccrt/" + fileName, pageIndicate);
+			DonwloadUtil.DonwloadImg(fileUrl, "C:/ccrt/" + fileName, pageIndicate);
 		}
 	}
 	/**

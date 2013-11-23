@@ -18,6 +18,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
+import cn.linjonh.jsoup.util.DonwloadUtil;
 
 /**
  * @author linjonh
@@ -133,7 +134,7 @@ public class SexyMeiNv {
 
 						String imgFileName = getFileName(imgFileUrl, COUNT);
 						COUNT++;
-						DonwloadImg.DonwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
+						DonwloadUtil.DonwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
 					}
 				}
 			}
