@@ -1,4 +1,6 @@
-package cn.linjonh.jsoup;
+package cn.linjonh.jsoup.util;
+
+import cn.linjonh.jsoup.MainClass;
 
 public class TestDownLoadImg {
 
