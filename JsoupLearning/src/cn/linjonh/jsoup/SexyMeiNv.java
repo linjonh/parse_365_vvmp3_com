@@ -91,7 +91,7 @@ public class SexyMeiNv {
 	 *            width="139" height="162" />美艳模特袒胸露乳写真照</a>
 	 */
 	public static ArrayList<HashMap<String, String>> createNameValueMapLists(Elements imgHtmlLists) {
-		ArrayList<HashMap<String, String>> Items = new ArrayList<>();// 为了和网站顺序一直用list存放map，每个map放一个item条目
+		ArrayList<HashMap<String, String>> Items = new ArrayList<HashMap<String, String>>();// 为了和网站顺序一直用list存放map，每个map放一个item条目
 		for (Element el : imgHtmlLists) {
 			// <a target="_blank" href="http://www.mm131.com/xinggan/1415.html"><img
 			// src="http://img1.mm131.com/pic/1415/0.jpg" alt="宝岛美腿美女Doris私房照" width="120"
@@ -103,7 +103,7 @@ public class SexyMeiNv {
 			 * 宝岛美腿美女Doris私房==>http://www.mm131.com/xinggan/1415.html
 			 */
 			// System.out.println(imgHtmlName + "==>" + imgHtmlUrl);
-			HashMap<String, String> itemMap = new HashMap<>();
+			HashMap<String, String> itemMap = new HashMap<String, String>();
 			itemMap.put(imgHtmlName, imgHtmlUrl);// 记住板块里的某个角色照片集网页地址
 			Items.add(itemMap);// 存放所有角色的网页地址
 		}
