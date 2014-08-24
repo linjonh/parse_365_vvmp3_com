@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="F:/JSOUP/jsoup-1.7.3.jar" sourcepath="F:/JSOUP/jsoup-1.7.3-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/F:/JSOUP/jsoup-1.7.3-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JsoupLibs"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
