@@ -4,7 +4,6 @@
 package cn.linjonh.jsoup;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,8 +18,8 @@ import org.jsoup.select.Elements;
  */
 public class MeiZiTu {
 
-//	private static final String htmlUrl = "http://www.meizitu.com/a/list_1_1.html";
-	private static  String htmlUrl = "http://www.meizitu.com/tags.php?/%D4%A1%CA%D2/";
+	private static final String htmlUrl = "http://www.meizitu.com/a/list_1_1.html";
+	// private static String htmlUrl = "http://www.meizitu.com/tags.php?/%D4%A1%CA%D2/";
 
 	/**
 	 * 
@@ -37,7 +36,7 @@ public class MeiZiTu {
 		// TODO Auto-generated method stub
 
 //		String l=URLDecoder.decode("%D4%A1%CA%D2","GBK");
-		htmlUrl="http://www.meizitu.com/tags.php?"+URLEncoder.encode("浴室", "GBK")+"";
+		// htmlUrl="http://www.meizitu.com/tags.php?"+URLEncoder.encode("浴室", "GBK")+"";
 		/*URL oracle = new URL(htmlUrl);
         URLConnection yc = oracle.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -47,7 +46,8 @@ public class MeiZiTu {
             System.out.println(inputLine);
         in.close();*/
 //		System.out.println(l);
-		 Document doc =	Jsoup.connect(htmlUrl).userAgent("Mozilla/5.0 (Linux; U; Android 4.3; zh-cn; HUAWEI B199 Build/HuaweiB199) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30").timeout(100000).post() ;
+		// userAgent("Mozilla/5.0 (Linux; U; Android 4.3; zh-cn; HUAWEI B199 Build/HuaweiB199) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30").timeout(100000)
+		Document doc = Jsoup.connect(htmlUrl).get();
 //		 ConnUtil.getHtmlDocument(htmlUrl);
 		 System.out.println(doc);
 //		 Elements elements = doc.select("#wp_page_numbers li a");

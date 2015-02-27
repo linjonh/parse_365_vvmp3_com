@@ -20,6 +20,7 @@ public class ConnUtil {
 	public static Document getHtmlDocument(String htmlUrl) {
 		try {
 			Document document = Jsoup.connect(htmlUrl).get();
+			System.out.println("document connecting");
 			return document;
 		} catch (IOException e) {
 			e.printStackTrace();
