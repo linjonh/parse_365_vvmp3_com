@@ -2,45 +2,45 @@ package cn.linjonh.jsoup.util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-<<<<<<< HEAD
-=======
 import java.io.File;
->>>>>>> aedf8a00ed4e3726b810ef3c48f62f91f9f8de69
+
 import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import cn.linjonh.jsoup.util.Utils;
+
 public class DonwloadUtil {
 
-	public static boolean DonwloadImg(String fileUrl, String savePath, String pageIndicate)/* fileUrlÍøÂç×ÊÔ´µØÖ· */
+	public static boolean DonwloadImg(String fileUrl, String savePath, String pageIndicate)/* fileUrlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö· */
 	{
 
 		try {
-			URL url = new URL(fileUrl);/* ½«ÍøÂç×ÊÔ´µØÖ·´«¸ø,¼´¸³Öµ¸øurl */
-			/* ´ËÎªÁªÏµ»ñµÃÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ÓÃ·¨£¬ÒÔ±ãºóÃæµÄin±äÁ¿»ñµÃurl½ØÈ¡ÍøÂç×ÊÔ´µÄÊäÈëÁ÷ */
+			URL url = new URL(fileUrl);/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½url */
+			/* ï¿½ï¿½Îªï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½inï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½urlï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			DataInputStream in = new DataInputStream(connection.getInputStream());
-			/* ´Ë´¦Ò²¿ÉÓÃBufferedInputStreamÓëBufferedOutputStream */
+			/* ï¿½Ë´ï¿½Ò²ï¿½ï¿½ï¿½ï¿½BufferedInputStreamï¿½ï¿½BufferedOutputStream */
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(savePath));
-			/* ½«²ÎÊýsavePath£¬¼´½«½ØÈ¡µÄÍ¼Æ¬µÄ´æ´¢ÔÚ±¾µØµØÖ·¸³Öµ¸øoutÊä³öÁ÷ËùÖ¸¶¨µÄµØÖ· */
+			/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½savePathï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Í¼Æ¬ï¿½Ä´æ´¢ï¿½Ú±ï¿½ï¿½Øµï¿½Ö·ï¿½ï¿½Öµï¿½ï¿½outï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Äµï¿½Ö· */
 			byte[] buffer = new byte[4096];
 			int count = 0;
-			while ((count = in.read(buffer)) > 0)/* ½«ÊäÈëÁ÷ÒÔ×Ö½ÚµÄÐÎÊ½¶ÁÈ¡²¢Ð´ÈëbufferÖÐ */
+			while ((count = in.read(buffer)) > 0)/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Úµï¿½ï¿½ï¿½Ê½ï¿½ï¿½È¡ï¿½ï¿½Ð´ï¿½ï¿½bufferï¿½ï¿½ */
 			{
 				out.write(buffer, 0, count);
 			}
-			out.close();/* ºóÃæÈýÐÐÎª¹Ø±ÕÊäÈëÊä³öÁ÷ÒÔ¼°ÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ */
+			out.close();/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ */
 			in.close();
 			connection.disconnect();
-			System.out.println("µÚ" + pageIndicate + "ÍøÒ³" + fileUrl + "\n" + savePath);
-			return true;/* ÍøÂç×ÊÔ´½ØÈ¡²¢´æ´¢±¾µØ³É¹¦·µ»Øtrue */
+			System.out.println("ï¿½ï¿½" + pageIndicate + "ï¿½ï¿½Ò³" + fileUrl + "\n" + savePath);
+			return true;/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½È¡ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½ï¿½true */
 
 		} catch (Exception e) {
 			System.out.println(e + "\n" + fileUrl + "\n" + savePath);
 			return false;
 		}
 	}
-	public static boolean DonwloadImg(String imgFileUrl, String dirPath)/* fileUrlÍøÂç×ÊÔ´µØÖ· */
+	public static boolean DonwloadImg(String imgFileUrl, String dirPath)/* fileUrlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö· */
 	{
 		
 		try {
@@ -54,25 +54,25 @@ public class DonwloadUtil {
 				return true;
 			}
 			
-			URL url = new URL(imgFileUrl);/* ½«ÍøÂç×ÊÔ´µØÖ·´«¸ø,¼´¸³Öµ¸øurl */
-			/* ´ËÎªÁªÏµ»ñµÃÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ÓÃ·¨£¬ÒÔ±ãºóÃæµÄin±äÁ¿»ñµÃurl½ØÈ¡ÍøÂç×ÊÔ´µÄÊäÈëÁ÷ */
+			URL url = new URL(imgFileUrl);/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½url */
+			/* ï¿½ï¿½Îªï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½inï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½urlï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			DataInputStream in = new DataInputStream(connection.getInputStream());
-			/* ´Ë´¦Ò²¿ÉÓÃBufferedInputStreamÓëBufferedOutputStream */
+			/* ï¿½Ë´ï¿½Ò²ï¿½ï¿½ï¿½ï¿½BufferedInputStreamï¿½ï¿½BufferedOutputStream */
 			
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(imageFile));
-			/* ½«²ÎÊýsavePath£¬¼´½«½ØÈ¡µÄÍ¼Æ¬µÄ´æ´¢ÔÚ±¾µØµØÖ·¸³Öµ¸øoutÊä³öÁ÷ËùÖ¸¶¨µÄµØÖ· */
+			/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½savePathï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Í¼Æ¬ï¿½Ä´æ´¢ï¿½Ú±ï¿½ï¿½Øµï¿½Ö·ï¿½ï¿½Öµï¿½ï¿½outï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Äµï¿½Ö· */
 			byte[] buffer = new byte[4096];
 			int count = 0;
-			while ((count = in.read(buffer)) > 0)/* ½«ÊäÈëÁ÷ÒÔ×Ö½ÚµÄÐÎÊ½¶ÁÈ¡²¢Ð´ÈëbufferÖÐ */
+			while ((count = in.read(buffer)) > 0)/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Úµï¿½ï¿½ï¿½Ê½ï¿½ï¿½È¡ï¿½ï¿½Ð´ï¿½ï¿½bufferï¿½ï¿½ */
 			{
 				out.write(buffer, 0, count);
 			}
-			out.close();/* ºóÃæÈýÐÐÎª¹Ø±ÕÊäÈëÊä³öÁ÷ÒÔ¼°ÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ */
+			out.close();/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ */
 			in.close();
 			connection.disconnect();
 			System.out.println("\nsave " + imgFileUrl + " at:" + imageFile.getAbsolutePath());
-			return true;/* ÍøÂç×ÊÔ´½ØÈ¡²¢´æ´¢±¾µØ³É¹¦·µ»Øtrue */
+			return true;/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½È¡ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½ï¿½true */
 			
 		} catch (Exception e) {
 			System.out.println("donwload " + imgFileUrl + " in " + dirPath +" error: "+e );
