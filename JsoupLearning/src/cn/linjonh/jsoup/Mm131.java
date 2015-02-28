@@ -41,6 +41,7 @@ public class Mm131 {
 			String refUrl = el.attr("href");
 			// System.out.println(name + "==>" + refUrl);
 			HashMap<String, String> map = new HashMap<String, String>();
+
 			map.put(name, refUrl);
 			navNameURLlist.add(map);
 		}

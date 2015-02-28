@@ -147,7 +147,7 @@ public class SexyMeiNv {
 	 */
 	public static String getFileName(String imgFileUrl, int count) {
 		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY_MM_dd_kk_mm_",
+		SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY_MM_dd_HH_mm_",
 				Locale.CHINA);
 		String appedDateInfo = dateFormat.format(date);
 		String imgFileName = appedDateInfo + count + "_"
