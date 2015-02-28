@@ -51,6 +51,7 @@ public class DonwloadUtil {
 			}
 			File imageFile = new File(dirPath + "/" + Utils.getFileName(imgFileUrl));
 			if(imageFile.exists()){
+				Utils.print("Exists file: "+imageFile.getAbsolutePath());
 				return true;
 			}
 			
@@ -71,11 +72,11 @@ public class DonwloadUtil {
 			out.close();/* ��������Ϊ�ر�����������Լ�������Դ�Ĺ̶���ʽ */
 			in.close();
 			connection.disconnect();
-			System.out.println("\nsave " + imgFileUrl + " at:" + imageFile.getAbsolutePath());
+			System.out.println("\nsave " + imgFileUrl + " at:" + imageFile.getAbsolutePath()+" time at:"+Utils.getFormatedTime());
 			return true;/* ������Դ��ȡ���洢���سɹ�����true */
 			
 		} catch (Exception e) {
-			System.out.println("donwload " + imgFileUrl + " in " + dirPath +" error: "+e );
+			System.out.println("donwload " + imgFileUrl + " in " + dirPath +" error: "+e +" time at:"+Utils.getFormatedTime());
 			return false;
 		}
 	}
