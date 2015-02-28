@@ -25,7 +25,7 @@ public class XieZhengTaoTu {
 	 */
 	public static void main(String[] args) {
 		System.out.println("start");
-//		 final Document doc = ConnUtil.getHtmlDocument(mUrl);
+		// final Document doc = ConnUtil.getHtmlDocument(mUrl);
 		File in = new File("E:/xz.html");
 		try {
 			final Document doc = Jsoup.parse(in, "gb2312");
@@ -78,13 +78,20 @@ public class XieZhengTaoTu {
 	private static void download(Elements alinks) {
 		List<String> alinklist = getAlinks(alinks);
 		int count = 1;
+		boolean flag=false;
 		for (String link : alinklist) {
 			if (link.contains("jpg")) {
 				// DonwloadUtil.DonwloadImg(link, filePathDir);
 				System.out.println("skip " + count++ + " images here");
 			} else {
 				// http://xz5.mm667.com/tnl45/
-				downloadDetailAlbum(link);
+				print("downloadDetailAlbum:" + link);	
+				if ("http://xz2.mm667.com/zz02/".equals(link)) {
+					flag = true;
+				}
+				if (flag) {
+					downloadDetailAlbum(link);
+				}
 			}
 		}
 

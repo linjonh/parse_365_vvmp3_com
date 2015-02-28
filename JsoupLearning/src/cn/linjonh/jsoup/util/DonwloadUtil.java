@@ -3,6 +3,7 @@ package cn.linjonh.jsoup.util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
@@ -42,26 +43,29 @@ public class DonwloadUtil {
 	}
 	public static boolean DonwloadImg(String imgFileUrl, String dirPath)/* fileUrl������Դ��ַ */
 	{
+		boolean flag=false;
+		File dir=new File(dirPath);
+		if(!dir.exists()){
+			dir.mkdir();
+		}
+		File imageFile = new File(dirPath + "/" + Utils.getFileName(imgFileUrl));
+		if(imageFile.exists()){
+			Utils.print("Exists file: "+imageFile.getAbsolutePath());
+			return true;
+		}
 		
+		DataOutputStream out=null;
+		DataInputStream in=null;
+		HttpURLConnection connection=null;
 		try {
-			
-			File dir=new File(dirPath);
-			if(!dir.exists()){
-				dir.mkdir();
-			}
-			File imageFile = new File(dirPath + "/" + Utils.getFileName(imgFileUrl));
-			if(imageFile.exists()){
-				Utils.print("Exists file: "+imageFile.getAbsolutePath());
-				return true;
-			}
-			
+					
 			URL url = new URL(imgFileUrl);/* ��������Դ��ַ����,����ֵ��url */
 			/* ��Ϊ��ϵ���������Դ�Ĺ̶���ʽ�÷����Ա�����in�������url��ȡ������Դ�������� */
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			DataInputStream in = new DataInputStream(connection.getInputStream());
+			connection = (HttpURLConnection) url.openConnection();
+			in = new DataInputStream(connection.getInputStream());
 			/* �˴�Ҳ����BufferedInputStream��BufferedOutputStream */
 			
-			DataOutputStream out = new DataOutputStream(new FileOutputStream(imageFile));
+			out = new DataOutputStream(new FileOutputStream(imageFile));
 			/* ������savePath��������ȡ��ͼƬ�Ĵ洢�ڱ��ص�ַ��ֵ��out�������ָ���ĵ�ַ */
 			byte[] buffer = new byte[4096];
 			int count = 0;
@@ -73,11 +77,27 @@ public class DonwloadUtil {
 			in.close();
 			connection.disconnect();
 			System.out.println("\nsave " + imgFileUrl + " at:" + imageFile.getAbsolutePath()+" time at:"+Utils.getFormatedTime());
-			return true;/* ������Դ��ȡ���洢���سɹ�����true */
+			flag= true;/* ������Դ��ȡ���洢���سɹ�����true */
 			
 		} catch (Exception e) {
 			System.out.println("donwload " + imgFileUrl + " in " + dirPath +" error: "+e +" time at:"+Utils.getFormatedTime());
-			return false;
+			if(imageFile.delete()){
+				Utils.print("delete file:"+imageFile.getAbsolutePath());
+			}
+			flag=false;
+		}finally{
+			try {
+				out.close();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				in.close();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+			connection.disconnect();
+			return flag;
 		}
 	}
 }
