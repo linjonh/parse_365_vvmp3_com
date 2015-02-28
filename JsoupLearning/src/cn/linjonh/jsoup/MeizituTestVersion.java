@@ -11,12 +11,12 @@ import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.meizitu.MeizituEntity;
 
-public class Meizitu {
+public class MeizituTestVersion {
 	static final String web_2 = "http://www.meizitu.com";
 	private static ArrayList<MeizituEntity> mLists = new ArrayList<MeizituEntity>();
 	static Document meizitu = null;
 
-	public Meizitu() {
+	public MeizituTestVersion() {
 		// TODO Auto-generated constructor stub
 	}
 
