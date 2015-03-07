@@ -18,7 +18,7 @@ public class XieZhengTaoTu {
 
 	static final String mUrl = "http://77.bbs560.com/xz/cn/";
 	static final String mip = "http://198.44.250.182/xz/cn/";
-	static final String filePathDir = "E:/XieZhenTaoTu";
+	static final String filePathDir = "C:/XieZhenTaoTu";
 
 	/**
 	 * @param args
@@ -26,15 +26,38 @@ public class XieZhengTaoTu {
 	public static void main(String[] args) {
 		System.out.println("start");
 		// final Document doc = ConnUtil.getHtmlDocument(mUrl);
-		File in = new File("E:/xz.html");
-		try {
-			final Document doc = Jsoup.parse(in, "gb2312");
-			Elements alinks = doc.select("a");
-			// System.out.println(alinks);
-			download(alinks);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				File in = new File(filePathDir + "/xz.html");
+
+				try {
+					final Document doc = Jsoup.parse(in, "gb2312");
+					Elements alinks = doc.select("a");
+					// System.out.println(alinks);
+					download(alinks,false);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				File omin = new File(filePathDir + "/xzoumei.html");
+//				try {
+//					final Document doc = Jsoup.parse(omin, "gb2312");
+//					Elements alinks = doc.select("a");
+//					// System.out.println(alinks);
+//					download(alinks,true);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}).start();
 
 	}
 
@@ -75,23 +98,32 @@ public class XieZhengTaoTu {
 	 * @param alinks
 	 *            all album links
 	 */
-	private static void download(Elements alinks) {
+	private static void download(Elements alinks, boolean isOuMei) {
 		List<String> alinklist = getAlinks(alinks);
 		int count = 1;
-		boolean flag=false;
+		boolean flag = false;
 		for (String link : alinklist) {
 			if (link.contains("jpg")) {
 				// DonwloadUtil.DonwloadImg(link, filePathDir);
 				System.out.println("skip " + count++ + " images here");
 			} else {
 				// http://xz5.mm667.com/tnl45/
-				print("downloadDetailAlbum:" + link);	
-				if ("http://xz2.mm667.com/zz02/".equals(link)) {
-					flag = true;
-				}
-				if (flag) {
+				print("downloadDetailAlbum:" + link);
+				if (isOuMei) {
 					downloadDetailAlbum(link);
+				} else {
+//					http://xz1.mm667.com/xz42/
+//					http://xz1.mm667.com/xz43/
+//					http://xz1.mm667.com/xz44/待续哎
+//					http://xz1.mm667.com/xz21/待续哎
+					if ("http://xz1.mm667.com/xz42/".equals(link)) {
+						flag = true;
+					}
+					if (flag) {
+						downloadDetailAlbum(link);
+					}
 				}
+
 			}
 		}
 
@@ -107,7 +139,15 @@ public class XieZhengTaoTu {
 	 */
 	private static void downloadDetailAlbum(String url) {
 		Document document = ConnUtil.getHtmlDocument(url);
-		Elements elements = document.select("option");
+		if(document==null){
+			do {
+				Utils.print(Utils.getFormatedTime()+"-->downloadDetailAlbum: document is null, trying connect again...");
+				document = ConnUtil.getHtmlDocument(url);
+			} while (document == null);
+			Utils.print(Utils.getFormatedTime()+"-->downloadDetailAlbum: document is not null now ");
+		}
+		Elements elements = document.select("option"); 
+		Utils.print("image count:" +elements.size());
 		for (Element element : elements) {
 			// print("baseUri: " + element.baseUri());
 			String link = element.baseUri() + element.attr("value");

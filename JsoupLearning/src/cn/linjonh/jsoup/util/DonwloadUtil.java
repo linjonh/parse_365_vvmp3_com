@@ -76,7 +76,7 @@ public class DonwloadUtil {
 			out.close();/* ��������Ϊ�ر�����������Լ�������Դ�Ĺ̶���ʽ */
 			in.close();
 			connection.disconnect();
-			System.out.println("\nsave " + imgFileUrl + " at:" + imageFile.getAbsolutePath()+" time at:"+Utils.getFormatedTime());
+			System.out.println("save " + imgFileUrl + " at:" + imageFile.getAbsolutePath()+" time at:"+Utils.getFormatedTime());
 			flag= true;/* ������Դ��ȡ���洢���سɹ�����true */
 			
 		} catch (Exception e) {
@@ -87,11 +87,13 @@ public class DonwloadUtil {
 			flag=false;
 		}finally{
 			try {
+				if(out!=null)
 				out.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 			try {
+				if(in!=null)
 				in.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
