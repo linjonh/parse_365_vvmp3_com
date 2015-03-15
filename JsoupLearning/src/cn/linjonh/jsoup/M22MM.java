@@ -18,6 +18,7 @@ import com.sun.org.apache.xpath.internal.operations.Div;
 
 import cn.linjonh.jsoup.util.ConnUtil;
 import cn.linjonh.jsoup.util.DonwloadUtil;
+import cn.linjonh.jsoup.util.Utils;
 
 public class M22MM {
 
@@ -63,7 +64,6 @@ public class M22MM {
 					syncAddModuleInfoToList(moduleItem);
 				}
 			}).start();
-			// break;
 		}
 	}
 
@@ -123,12 +123,10 @@ public class M22MM {
 				// public void run() {
 				for (int i = 1; i < someoneMod.pageSize; i++) {
 					visiModulePage(someoneMod, i);
-					break;
 				}
 				// }
 				// });
 				// executor.execute(moduleThread);
-				break;
 			}
 		}
 	}
@@ -153,6 +151,7 @@ public class M22MM {
 	 */
 	private static ModuleInfoBean detectModulePageCount(String module_url, String module_name) {
 		print(">>>detect module url:" + module_url);
+		DonwloadUtil.writeLog(dirPath, ">>>detect module url:" + module_url + "\r\n");
 		Document doc = ConnUtil.getHtmlDocument(module_url);
 		// ShowPage element
 		Elements els = doc.select("div.ShowPage");
@@ -175,11 +174,12 @@ public class M22MM {
 		someone_module.url = module_url;
 		someone_module.pageSize = (int) Math.ceil(c);
 		someone_module.pagePattren = preSuffix;
-
-		print("=====================module url:=====" + module_url + "==================");
-		print("=====================module name_zh: " + module_name + "==================");
-		print("=====================module size:    " + someone_module.pageSize + "页==================");
-		print("=====================module pagePattren:    " + someone_module.pagePattren + "==================");
+		String log = "=====module url:=====" + module_url + "==============" + "\n[" + Utils.getFormatedTime()
+				+ "]===module name_zh: " + module_name + "===============" + "\n[" + Utils.getFormatedTime()
+				+ "]===module size:    " + someone_module.pageSize + "页==" + "\n[" + Utils.getFormatedTime()
+				+ "]===module pagePattren:" + someone_module.pagePattren;
+		print(log);
+		DonwloadUtil.writeLog(dirPath, log);
 		return someone_module;
 	}
 
@@ -203,6 +203,7 @@ public class M22MM {
 			htmlUrl = bean.url + bean.pagePattren + pageIndex + ".html";
 		}
 		print("visi Module Page==>>> " + htmlUrl);
+		DonwloadUtil.writeLog(dirPath, "visi Module Page==>>> " + htmlUrl);
 		Document doc = ConnUtil.getHtmlDocument(htmlUrl);
 		// contain seven items of top header
 		Elements gridItems = doc.select(".c_inner .pic li a");
@@ -231,68 +232,66 @@ public class M22MM {
 		for (int i = 0; i < beans.size(); i++) {
 			GridItemInfoBean imageItem = beans.get(i);
 			print("visitImageItem==>>> " + imageItem.url);
+			DonwloadUtil.writeLog(dirPath, "visitImageItem==>>> " + imageItem.url);
 			Document doc = ConnUtil.getHtmlDocument(imageItem.url);
 			Elements picItems = doc.select("div.pagelist a");
 			/*
 			 * escape previos two item : <a
 			 * href="/mm/bagua/PmaHPdeaHeJaimbae.html">上一组</a>
 			 */
-			String relativeUrlPattern = picItems.get(1).attr("href");// 通用相对地址模板
+			String relativeUrlPattern = "";
+			try {
+				relativeUrlPattern = picItems.get(1).attr("href");// 通用相对地址模板
+			} catch (Exception e) {
+				String log = "EpicItems.get(1).attr(\"href\");// 通用相对地址模板" + e.toString();
+				print(log);
+				DonwloadUtil.writeLog(dirPath, log);
+				break;
+			}
+
 			relativeUrlPattern = relativeUrlPattern.substring(0, relativeUrlPattern.lastIndexOf("-"));
-			Elements showpages=doc.select("div.ShowPage strong");
-			String pageSize="";
+			Elements showpages = doc.select("div.ShowPage strong");
+			String pageSize = "";
 			if (showpages.size() > 0) {
 				Element showpageEl = showpages.get(0);
 				pageSize = showpageEl.html();
 				pageSize = pageSize.substring(pageSize.lastIndexOf("/") + 1);
 				print(pageSize);
 			}
-//			Elements pagelist = picItems;
-//			while (true) {
-//				String lastInfo = pagelist.get(pagelist.size() - 1).html();
-//				if (lastInfo.contains("下一页")) {
-//					String url = imageItem.moduleBaseUrl + relativeUrlPattern + "-" + size + ".html";
-//					// loopToGetAllImageUrl();
-//					pagelist = loopToGetAllImageUrl(url);
-//					if (pagelist != null) {
-//						// 递归
-//						size += pagelist.size() - 1;
-//						continue;
-//					}else{
-//						break;
-//					}
-//				} else {
-//					break;
-//				}
-//			}
 
-			// just “下一组” end. so we could get all image src href to download
-			// all images
-			// for (int j = 1; j < size; j++) {// image page.
-			// RoleImageInfoBeen imageBean = new RoleImageInfoBeen();
-			// // PiaeddHdCCCadHCHJ-2.html
-			// imageBean.pattern = relativeUrlPattern;
-			// imageBean.imgeCount = size;
-			// imageBean.moduleBaseUrl = imageItem.moduleBaseUrl;
-			// imageBean.name_zh = imageItem.name_zh;
-			// startDownloadImage(imageBean);
-			// }
 			String imgFileUrl = imageItem.moduleBaseUrl + relativeUrlPattern + "-" + pageSize + ".html";
 			Document document = ConnUtil.getHtmlDocument(imgFileUrl);
 
 			Elements els = document.select("div#box-inner script");
-			String imageUrlSript = els.get(1).html();
-			String[] tmpUrls = imageUrlSript.split(";");
-			String[] allImageItemUrls = parseImageUrl(tmpUrls);
-			for (int k = 0; k < allImageItemUrls.length; k++) {
-				String fileName = "E:/MM22/" + imageItem.name_zh + "_" + (k + 1) + ".jpg";
-				// download
-				DonwloadUtil.donwloadImg(allImageItemUrls[k], fileName);
+			String imageUrlSript = "";
+			try {
+				imageUrlSript = els.get(1).html();
+			} catch (Exception e) {
+				DonwloadUtil.writeLog(dirPath, "Error:" + e.toString());
 			}
-//			break;
+
+			if (!imageUrlSript.isEmpty()) {
+				String[] tmpUrls = imageUrlSript.split(";");
+				String[] allImageItemUrls = parseImageUrl(tmpUrls);
+				for (int k = 0; k < allImageItemUrls.length; k++) {
+					final String fileName = dirPath + imageItem.name_zh + "_" + (k + 1) + ".jpg";
+					// download
+					final String url=allImageItemUrls[k];
+					Thread moduleThread = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							DonwloadUtil.donwloadImg(url, fileName);
+						}
+					});
+					executor.execute(moduleThread);
+				}
+			}
 		}
 
 	}
+
+	private static final String dirPath = "E:/MM22/";
 
 	/**
 	 * // <li>var arrayImg = new Array() // <li>arrayImg[0] =

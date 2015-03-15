@@ -18,10 +18,9 @@ public class ConnUtil {
 		Document document = null;
 		do {
 			try {
-				document = Jsoup
-						.connect(htmlUrl)
-						.userAgent(
-								"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
+				document = Jsoup.connect(htmlUrl)
+				// .userAgent(
+				// "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
 						.get();
 				System.out.println("document connecting");
 			} catch (IOException e) {

@@ -3,6 +3,7 @@ package cn.linjonh.jsoup.util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.io.FileOutputStream;
@@ -67,6 +68,7 @@ public class DonwloadUtil {
 		boolean flag = false;
 		File imageFile = null;
 		File dir = null;
+
 		if (dirPath1.lastIndexOf("/") == dirPath1.length() - 1) {
 			// no name, just directory, then auto generate file name
 			dir = new File(dirPath1);
@@ -84,12 +86,16 @@ public class DonwloadUtil {
 		}
 
 		if (imageFile.exists()) {
-			Utils.print("Exists file: " + imageFile.getAbsolutePath());
+			String log = "Exists file: " + imageFile.getAbsolutePath();
+			Utils.print(log);
+			writeLog(dir.getAbsolutePath(), log);
 			return true;
 		} else if (fileName != null) {
 			imageFile = new File(fileName);// add module name
 			if (imageFile.exists()) {
-				Utils.print("Exists file: " + imageFile.getAbsolutePath());
+				String log = "Exists file: " + imageFile.getAbsolutePath();
+				Utils.print(log);
+				writeLog(dir.getAbsolutePath(), log);
 				return true;
 			}
 		}
@@ -99,33 +105,29 @@ public class DonwloadUtil {
 		HttpURLConnection connection = null;
 		try {
 
-			URL url = new URL(imgFileUrl);/* ��������Դ��ַ����,����ֵ��url */
-			/* ��Ϊ��ϵ���������Դ�Ĺ̶���ʽ�÷����Ա�����in�������url��ȡ������Դ�������� */
+			URL url = new URL(imgFileUrl);
 			connection = (HttpURLConnection) url.openConnection();
 			in = new DataInputStream(connection.getInputStream());
-			/* �˴�Ҳ����BufferedInputStream��BufferedOutputStream */
 
 			out = new DataOutputStream(new FileOutputStream(imageFile));
-			/* ������savePath��������ȡ��ͼƬ�Ĵ洢�ڱ��ص�ַ��ֵ��out�������ָ���ĵ�ַ */
+
 			byte[] buffer = new byte[4096];
 			int count = 0;
-			while ((count = in.read(buffer)) > 0)/*
-												 * �����������ֽڵ���ʽ��ȡ��д��buffer
-												 * ��
-												 */
-			{
+			while ((count = in.read(buffer)) > 0) {
 				out.write(buffer, 0, count);
 			}
-			out.close();/* ��������Ϊ�ر�����������Լ�������Դ�Ĺ̶���ʽ */
+			out.close();
 			in.close();
 			connection.disconnect();
-			System.out.println("save " + imgFileUrl + " at:" + imageFile.getAbsolutePath() + " time at:"
-					+ Utils.getFormatedTime());
-			flag = true;/* ������Դ��ȡ���洢���سɹ�����true */
+			String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
+			System.out.println(log);
+			writeLog(dir.getAbsolutePath(), log);
+			flag = true;
 
 		} catch (Exception e) {
-			System.out.println("donwload " + imgFileUrl + " in " + imgFileUrl + " error: " + e + " time at:"
-					+ Utils.getFormatedTime());
+			String log = "donwload File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl + " Error: " + e;
+			System.out.println(log);
+			writeLog(dir.getAbsolutePath(), log);
 			if (imageFile.delete()) {
 				Utils.print("delete file:" + imageFile.getAbsolutePath());
 			}
@@ -146,5 +148,21 @@ public class DonwloadUtil {
 			connection.disconnect();
 			return flag;
 		}
+	}
+
+	public static synchronized void writeLog(String dir, String log) {
+		File file = new File(dir + "/log.txt");
+		String time = "[" + Utils.getFormatedTime() + "]: ";
+		log = time + log + "\n";
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+			fileOutputStream.write(log.getBytes());
+			fileOutputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
