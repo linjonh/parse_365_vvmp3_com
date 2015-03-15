@@ -147,12 +147,12 @@ public class XieZhengTaoTu {
 			Utils.print(Utils.getFormatedTime()+"-->downloadDetailAlbum: document is not null now ");
 		}
 		Elements elements = document.select("option"); 
-		Utils.print("image count:" +elements.size());
+		Utils.print("image pageSize:" +elements.size());
 		for (Element element : elements) {
 			// print("baseUri: " + element.baseUri());
 			String link = element.baseUri() + element.attr("value");
 			// print("downloadDetailAlbum:"+link);
-			DonwloadUtil.DonwloadImg(link, filePathDir);
+			DonwloadUtil.donwloadImg(link, filePathDir,filePathDir);
 		}
 	}
 

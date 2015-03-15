@@ -40,20 +40,20 @@ public class CcrtYaZhou {
 		// TODO Auto-generated method stub
 
 		/**
-		 * TODO µÚÒ»¼¶²Ëµ¥ÍøÒ³
+		 * TODO ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ò³
 		 */
 		Document document = ConnUtil.getHtmlDocument(yaZhouUrl);
 		// System.out.println(document.toString());// Doc
-		Elements menuLists = document.select("div.fitCont_2 ul li");// µÚÒ»Ò³Íø¸ñ²Ëµ¥
-		Elements pageLists = document.select("div.gengduo ul a[href]");// Íø¸ñÍ¼Æ¬²Ëµ¥·ÖÒ³
+		Elements menuLists = document.select("div.fitCont_2 ul li");// ï¿½ï¿½Ò»Ò³ï¿½ï¿½ï¿½ï¿½Ëµï¿½
+		Elements pageLists = document.select("div.gengduo ul a[href]");// ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Ëµï¿½ï¿½ï¿½Ò³
 		// System.out.println(menuLists + "\n");
 		// System.out.println(pageLists + "\n");
 
-		ArrayList<HashMap<String, String>> pageMaps = createNameUrl(pageLists, 1);// Ïà¶ÔµØÖ·µÄmaps
-//		ArrayList<HashMap<String, String>> cellMenuMaps = createNameUrl(menuLists, 2);// Ïà¶ÔµØÖ·µÄmaps
+		ArrayList<HashMap<String, String>> pageMaps = createNameUrl(pageLists, 1);// ï¿½ï¿½Ôµï¿½Ö·ï¿½ï¿½maps
+//		ArrayList<HashMap<String, String>> cellMenuMaps = createNameUrl(menuLists, 2);// ï¿½ï¿½Ôµï¿½Ö·ï¿½ï¿½maps
 //		visitCellMenuPictures(cellMenuMaps);
 		/**
-		 * µÚÒ»Ò³µÄ²Ëµ¥´´½¨
+		 * ï¿½ï¿½Ò»Ò³ï¿½Ä²Ëµï¿½ï¿½ï¿½ï¿½ï¿½
 		 */
 		HashMap<String, String> mainPageMaps = new HashMap<String, String>();
 		for (HashMap<String, String> map : pageMaps) {
@@ -69,7 +69,7 @@ public class CcrtYaZhou {
 
 
 		/**
-		 * ±éÀú²Ëµ¥
+		 * ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
 		 */
 		Iterator<String> mainIte = mainPageMaps.keySet().iterator();
 		while (mainIte.hasNext()) {
@@ -77,10 +77,10 @@ public class CcrtYaZhou {
 			String cellMenuAbsHtmlURL = mainPageMaps.get(mainPageKey);
 
 			Document mainPageDoc = ConnUtil.getHtmlDocument(cellMenuAbsHtmlURL);
-			menuLists = mainPageDoc.select("div.fitCont_2 ul li");// µÚÒ»Ò³Íø¸ñ²Ëµ¥
+			menuLists = mainPageDoc.select("div.fitCont_2 ul li");// ï¿½ï¿½Ò»Ò³ï¿½ï¿½ï¿½ï¿½Ëµï¿½
 
 			ArrayList<HashMap<String, String>> cellMenuMaps = createNameUrl(menuLists,
-					TYPE_CELLMENULIST);// Ïà¶ÔµØÖ·µÄmaps
+					TYPE_CELLMENULIST);// ï¿½ï¿½Ôµï¿½Ö·ï¿½ï¿½maps
 			visitCellMenuPictures(cellMenuMaps, mainPageKey);
 		}
 		
@@ -94,7 +94,7 @@ public class CcrtYaZhou {
 	public static void visitCellMenuPictures(ArrayList<HashMap<String, String>> cellMenuMaps,
 			String pageIndicate) {
 		/**
-		 * {previewImgURL=http://s.ccrt.cc/05408.jpg, title=·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå,
+		 * {previewImgURL=http://s.ccrt.cc/05408.jpg, title=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
 		 * HtmlRelativeUrl=/html/yazhou/iaa5408.htm}
 		 */
 		for (HashMap<String, String> map : cellMenuMaps) {
@@ -104,14 +104,14 @@ public class CcrtYaZhou {
 			String AbsHtmlURI = baseUrl + HtmlRelativeUrl;
 			System.out.println(title);
 			/**
-			 * TODO µÚ¶þ¼¶Í¼Æ¬ÍøÒ³
+			 * TODO ï¿½Ú¶ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ò³
 			 */
 			Document personHtmldoc = ConnUtil.getHtmlDocument(AbsHtmlURI);//
 			Elements NextppEl = personHtmldoc.select("div.pp");
 			/**
-			 * <img src="http://ccrt.kanshuzu.com/pic105/10503-1.jpg" alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå"
+			 * <img src="http://ccrt.kanshuzu.com/pic105/10503-1.jpg" alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 			 * onload="pic_width(this)" onclick="obp(this)" /> <img
-			 * src="http://ccrt.kanshuzu.com/pic105/10503-2.jpg" alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå"
+			 * src="http://ccrt.kanshuzu.com/pic105/10503-2.jpg" alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 			 * onload="pic_width(this)" onclick="obp(this)" />
 			 */
 			Elements NextimgSrcEls = NextppEl.select("a[href] img[src]");
@@ -121,10 +121,10 @@ public class CcrtYaZhou {
 			 */
 			Elements NextimgSrcPages = NextppEl.select("a[href]");
 
-			lookAndSaveImg(map, NextimgSrcEls, pageIndicate);// µÚÒ»Ò³Í¼Æ¬ÏÂÔØ
+			lookAndSaveImg(map, NextimgSrcEls, pageIndicate);// ï¿½ï¿½Ò»Ò³Í¼Æ¬ï¿½ï¿½ï¿½ï¿½
 
 			/**
-			 * ´´½¨±éÀúÏÂÔØÍ¼Æ¬µØÖ·Maps,Ïà¶ÔµØÖ·,ÉÏÒ»¼¶µØÖ·ÊÇyaZhouUrl = baseUrl + "/html/yazhou/";
+			 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ö·Maps,ï¿½ï¿½Ôµï¿½Ö·,ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½yaZhouUrl = baseUrl + "/html/yazhou/";
 			 */
 			ArrayList<HashMap<String, String>> imgHtmlPageURLs = createNameUrl(NextimgSrcPages,
 					TYPE_IMG_PAGE_LIST);
@@ -134,7 +134,7 @@ public class CcrtYaZhou {
 				String pKey = relHtmlURlMap.keySet().iterator().next();
 
 				/**
-				 * TODO µÚÈý¼¶ÏÂÒ»ÕÅÍ¼Æ¬ÍøÒ³
+				 * TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ò³
 				 */
 				String AbsNextHtmlURI = yaZhouUrl + relHtmlURlMap.get(pKey);
 				Document personNextHtmldoc = ConnUtil.getHtmlDocument(AbsNextHtmlURI);//
@@ -169,31 +169,31 @@ public class CcrtYaZhou {
 			String ImgName = ImgMap.keySet().iterator().next();
 			String fileUrl = ImgMap.get(ImgName);
 			/**
-			 * {previewImgURL=http://s.ccrt.cc/05408.jpg, title=·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå,
+			 * {previewImgURL=http://s.ccrt.cc/05408.jpg, title=ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
 			 * HtmlRelativeUrl=/html/yazhou/iaa5408.htm}
 			 */
 
 
 			String fileName = ImgName + fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-			DonwloadUtil.DonwloadImg(fileUrl, "C:/ccrt/" + fileName, pageIndicate);
+			DonwloadUtil.donwloadImg(fileUrl, "C:/ccrt/" + fileName, pageIndicate);
 		}
 	}
 	/**
 	 * 
 	 * @param elLists
 	 * @param type
-	 *            ±»½âÎöµÄÔªËØËù´ú±íµÄÒâË¼
+	 *            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼
 	 *            <p>
-	 *            TYPE_PAGELIST=1±íÊ¾¸ÃÒ³µÄÆäËûhtmlÄ¿Â¼Ò³Âë
+	 *            TYPE_PAGELIST=1ï¿½ï¿½Ê¾ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½htmlÄ¿Â¼Ò³ï¿½ï¿½
 	 *            <p>
-	 *            TYPE_CELLMENULIST=2±íÊ¾¸ÃÒ³µÄÍ¼½ÇÉ«²Ëµ¥
+	 *            TYPE_CELLMENULIST=2ï¿½ï¿½Ê¾ï¿½ï¿½Ò³ï¿½ï¿½Í¼ï¿½ï¿½É«ï¿½Ëµï¿½
 	 * @return
 	 */
 	public static ArrayList<HashMap<String, String>> createNameUrl(Elements elLists, int type) {
 		ArrayList<HashMap<String, String>> hashMaps = new ArrayList<HashMap<String, String>>();
 		switch (type){
 			case TYPE_PAGELIST :
-				for (int i = 0; i < elLists.size() - 1; i++) {// ¹ýÂËµô×îÄ©Ò³
+				for (int i = 0; i < elLists.size() - 1; i++) {// ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ä©Ò³
 					HashMap<String, String> map = new HashMap<String, String>();
 					Element el=elLists.get(i);
 					String PageRelativeUrl = el.attr("href");
@@ -219,10 +219,10 @@ public class CcrtYaZhou {
 			case TYPE_IMG_PAGE_LIST :
 				/**
 				 * <a href="iaa5408_2.htm"><img src="http://ccrt.kanshuzu.com/pic105/10503-1.jpg"
-				 * alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå" onload="pic_width(this)" onclick="obp(this)" /></a>
+				 * alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" onload="pic_width(this)" onclick="obp(this)" /></a>
 				 * <p>
 				 * <a href="iaa5408_2.htm"><img src="http://ccrt.kanshuzu.com/pic105/10503-2.jpg"
-				 * alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå" onload="pic_width(this)" onclick="obp(this)" /></a>
+				 * alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" onload="pic_width(this)" onclick="obp(this)" /></a>
 				 * <p>
 				 * <a href="iaa5408_2.htm">[2]</a>
 				 * <p>
@@ -230,7 +230,7 @@ public class CcrtYaZhou {
 				 * <p>
 				 * <a href="iaa5408_4.htm">[4]</a>
 				 */
-				for (int i = 2; i < elLists.size(); i++) {// ¹ýÂËµôÇ°Á½ÌõÒÑÏÔÊ¾Í¼Æ¬µÄhtmlÔªËØ
+				for (int i = 2; i < elLists.size(); i++) {// ï¿½ï¿½ï¿½Ëµï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Í¼Æ¬ï¿½ï¿½htmlÔªï¿½ï¿½
 					HashMap<String, String> map = new HashMap<String, String>();
 					Element element = elLists.get(i);
 					String htmlRelativeURL = element.attr("href");
@@ -242,10 +242,10 @@ public class CcrtYaZhou {
 				break;
 			case TYPE_IMG_PAGE_CONTENT :
 				/**
-				 * <img src="http://ccrt.kanshuzu.com/pic105/10503-1.jpg" alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå"
+				 * <img src="http://ccrt.kanshuzu.com/pic105/10503-1.jpg" alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 				 * onload="pic_width(this)" onclick="obp(this)" />
 				 * <p>
-				 * <img src="http://ccrt.kanshuzu.com/pic105/10503-2.jpg" alt="·¿¼äÀïµÄÃÀÅ®Ð¡ÂüåüÃÄÈËÌå"
+				 * <img src="http://ccrt.kanshuzu.com/pic105/10503-2.jpg" alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 				 * onload="pic_width(this)" onclick="obp(this)" />
 				 */
 				for (int i = 0; i < elLists.size(); i++) {

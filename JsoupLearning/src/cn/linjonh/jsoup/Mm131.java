@@ -1,8 +1,18 @@
 package cn.linjonh.jsoup;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,8 +24,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import cn.linjonh.jsoup.util.ConnUtil;
+
+import com.sun.corba.se.impl.ior.ByteBuffer;
+import com.sun.org.apache.bcel.internal.generic.RET;
+import com.sun.xml.internal.ws.util.ByteArrayBuffer;
+import com.sun.xml.internal.ws.util.StringUtils;
+
 /**
- * Ã»·¨ÏÂÔØÍ¼Æ¬
+ * <a href="http://www.mm131.com/">æ££æ ­ã€‰</a> <a
+ * href="http://www.mm131.com/xinggan/">é¬Ñ„åŠ…ç¼‡åº¡ã‚³</a> <a
+ * href="http://www.mm131.com/qingchun/">å¨“å‘¯å‡½ç¼‡åº£æ¹</a> <a
+ * href="http://www.mm131.com/xiaohua/">ç¼‡åº¡ã‚³éÂ¤å§³</a> <a
+ * href="http://www.mm131.com/chemo/">é¬Ñ„åŠ…æï¸½Ä</a> <a
+ * href="http://www.mm131.com/qipao/">éƒæ¥„î•²ç¼‡åº¡ã‚³</a> <a
+ * href="http://www.mm131.com/mingxing/">é„åº¢æ§¦éæ¬‘æ¹¡</a>
  * 
  * @author linjonh
  * 
@@ -31,45 +54,52 @@ public class Mm131 {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		Document doc = Jsoup.connect("http://www.mm131.com/").get();
+		Document doc = null;
+		do {
+			try {
+				doc = ConnUtil.getHtmlDocument("http://www.mm131.com/");
+			} catch (Exception e) {
+			}
+		} while (doc == null);
 		// System.out.println(doc.toString());
 		Elements navLists = doc.select("div.nav a[href]");
+
 		ArrayList<HashMap<String, String>> navNameURLlist = new ArrayList<HashMap<String, String>>();
 		for (Element el : navLists) {
 			String name = el.text();
 			String refUrl = el.attr("href");
-			// System.out.println(name + "==>" + refUrl);
+			print(name + "==>" + refUrl);
 			HashMap<String, String> map = new HashMap<String, String>();
 
 			map.put(name, refUrl);
 			navNameURLlist.add(map);
 		}
+
 		// for (int i = 1; i < navNameURLlist.size(); i++) {
-		HashMap<String, String> map = navNameURLlist.get(1);// ÒÔĞÔ¸ĞÃÀÅ®Í¼Æ¬ÎªÀı{ĞÔ¸ĞÃÀÅ®=http://www.mm131.com/xinggan/}
-		Iterator<String> ite = map.keySet().iterator();// Ô¤ÏÈÖ»·ÅÁËÒ»¸ömap key¼´Ä³¸ö°æ¿é
-			while (ite.hasNext()) {
+		HashMap<String, String> map = navNameURLlist.get(1);// http://www.mm131.com/xinggan/}
+		Iterator<String> ite = map.keySet().iterator();// map key
+		while (ite.hasNext()) {
 			String htmlUrl = map.get(ite.next());
-			Document childHtmlDoc = Jsoup.connect(htmlUrl).get();// ·ÃÎÊ°æ¿éÍøÒ³
+			Document childHtmlDoc = ConnUtil.getHtmlDocument(htmlUrl);// Module
 			Elements childEls = childHtmlDoc.select("div.main  dl dd a[href]");
 			// System.out.println(childHtmlDoc.toString());
-			// System.out.println(childEls.toString());// ÃÀÅ®Í¼Æ¬·½¸ñ
+			System.out.println(childEls.toString());// é”Ÿæ–¤æ‹·å¥³å›¾ç‰‡é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 
 			/*
-			 * <a href="list_6_11.html" class="page-en">11</a> <a href="list_6_2.html"
-			 * class="page-en">ÏÂÒ»Ò³</a>
+			 * <a href="list_6_11.html" class="page-en">11</a> <a
+			 * href="list_6_2.html" class="page-en">é”Ÿæ–¤æ‹·ä¸€é¡µ</a>
 			 */
-			Elements pageEls = childEls.select("a[href][class]");// Ò³Âë±êÇ©
+			Elements pageEls = childEls.select("a[href][class]");// é¡µé”Ÿæ–¤æ‹·é”Ÿè§’ï¿½
 			// System.out.println(cEls.toString());
-			int index = childEls.indexOf(pageEls.get(0));// Ò³Âë±êÇ©ÔÚchidEls¿ªÊ¼µÄÎ»ÖÃ
-			List<Element> imgHtmlLists = childEls.subList(0, index);// È¥³ı²»ĞèÒªµÄ,»ñµÃ
-																	// ÃÀÅ®Í¼Æ¬·½¸ñhref¼°¶ÔÓ¦name±êÇ©ÁĞ±í
+			int index = childEls.indexOf(pageEls.get(0));// é¡µé”Ÿæ–¤æ‹·é”Ÿè§’â•‹æ‹·é”ŸçµšhidElsé”Ÿæ–¤æ‹·å§‹é”Ÿæ–¤æ‹·ä½é”Ÿæ–¤æ‹·
+			List<Element> imgHtmlLists = childEls.subList(0, index);// å»é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·è¦é”Ÿæ–¤æ‹·,é”Ÿæ–¤æ‹·é”Ÿï¿½
+																	// é”Ÿæ–¤æ‹·å¥³å›¾ç‰‡é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·hrefé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·åº”nameé”Ÿæ–¤æ‹·ç­¾é”Ÿå«æ†‹æ‹·
 			visitWeb(htmlUrl, imgHtmlLists);
 
-			}
+		}
 		// }
 
-		// System.out.println(navLists.toString());// µ¼º½À¸
+		// System.out.println(navLists.toString());// é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 		// Elements as = lists.select("a");
 		// System.out.println(as.toString());
 	}
@@ -80,37 +110,40 @@ public class Mm131 {
 	 * @throws IOException
 	 */
 	public static void visitWeb(String htmlUrl, List<Element> imgHtmlLists) throws IOException {
-		ArrayList<HashMap<String, String>> Items = new ArrayList<HashMap<String, String>>();// ÎªÁËºÍÍøÕ¾Ë³ĞòÒ»Ö±ÓÃlist´æ·Åmap£¬Ã¿¸ömap·ÅÒ»¸öitemÌõÄ¿
+		ArrayList<HashMap<String, String>> Items = new ArrayList<HashMap<String, String>>();// ä¸ºé”Ÿå‰¿çŒ´æ‹·é”Ÿæ–¤æ‹·ç«™é¡ºé”Ÿæ–¤æ‹·ä¸€ç›´é”Ÿæ–¤æ‹·listé”Ÿæ–¤æ‹·é”Ÿçµ¤apé”Ÿæ–¤æ‹·æ¯é”Ÿæ–¤æ‹·mapé”Ÿæ–¤æ‹·ä¸€é”Ÿæ–¤æ‹·itemé”Ÿæ–¤æ‹·ç›®
 		for (Element el : imgHtmlLists) {
-			// <a target="_blank" href="http://www.mm131.com/xinggan/1415.html"><img
-			// src="http://img1.mm131.com/pic/1415/0.jpg" alt="±¦µºÃÀÍÈÃÀÅ®DorisË½·¿ÕÕ" width="120"
-			// height="160" />±¦µºÃÀÍÈÃÀÅ®DorisË½·¿</a>
+			// <a target="_blank"
+			// href="http://www.mm131.com/xinggan/1415.html"><img
+			// src="http://img1.mm131.com/pic/1415/0.jpg"
+			// alt="é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·å¥³Dorisç§é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·" width="120"
+			// height="160" />é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·å¥³Dorisç§é”Ÿæ–¤æ‹·</a>
 			// System.out.println(el);
 			String imgHtmlUrl = el.attr("href");
 			String imgHtmlName = el.text();
 			/*
-			 * ±¦µºÃÀÍÈÃÀÅ®DorisË½·¿==>http://www.mm131.com/xinggan/1415.html
+			 * é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·å¥³Dorisç§é”Ÿæ–¤æ‹·==>http://www.mm131.com/xinggan/1415.html
 			 */
 			// System.out.println(imgHtmlName + "==>" + imgHtmlUrl);
 			HashMap<String, String> itemMap = new HashMap<String, String>();
-			itemMap.put(imgHtmlName, imgHtmlUrl);// ¼Ç×¡°å¿éÀïµÄÄ³¸ö½ÇÉ«ÕÕÆ¬¼¯ÍøÒ³µØÖ·
-			Items.add(itemMap);// ´æ·ÅËùÓĞ½ÇÉ«µÄÍøÒ³µØÖ·
+			itemMap.put(imgHtmlName, imgHtmlUrl);// é”Ÿæ–¤æ‹·ä½é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æŸé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·è‰²é”Ÿæ–¤æ‹·ç‰‡é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é¡µé”Ÿæ–¤æ‹·å€
+			Items.add(itemMap);// é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·è–ªé”Ÿç¼´î‚¬æ‹·é”Ÿæ–¤æ‹·é”Ÿæ­ç­¹æ‹·é”Ÿè¡—ï¿½
 		}
 		/**
-		 * ·ÃÎÊÄ³¸ö½ÇÉ«ÕÕÆ¬ÍøÒ³µØÖ·
+		 * é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æŸé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·è‰²é”Ÿæ–¤æ‹·ç‰‡é”Ÿæ–¤æ‹·é¡µé”Ÿæ–¤æ‹·å€
 		 */
-		HashMap<String, String> personMap = Items.get(0);// ·ÃÎÊµÚ0¸öitem½ÇÉ«
+		HashMap<String, String> personMap = Items.get(0);// é”Ÿæ–¤æ‹·é”Ÿç»ç¢‰æ‹·0é”Ÿæ–¤æ‹·itemé”Ÿæ–¤æ‹·è‰²
 		Iterator<String> personIterator = personMap.keySet().iterator();
 
 		if (personIterator.hasNext()) {
 			String key = personIterator.next();
 			String personHtmlUrl = personMap.get(key);
-//				while (!personHtmlUrl.equals("")) {
-			Document personHtmlDoc = Jsoup.connect(personHtmlUrl).get();
+			// while (!personHtmlUrl.equals("")) {
+			Document personHtmlDoc = ConnUtil.getHtmlDocument(personHtmlUrl);
 			// System.out.println(personHtmlDoc);
 			Elements contentPicEls = personHtmlDoc.select("div.content-pic");
 			/**
-			 * <div class="content-pic"> <a href="1415_2.html"><img alt="±¦µºÃÀÍÈÃÀÅ®DorisË½·¿ÕÕ(Í¼1)"
+			 * <div class="content-pic"> <a href="1415_2.html"><img
+			 * alt="é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·å¥³Dorisç§é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·(å›¾1)"
 			 * src="http://img1.mm131.com/pic/1415/1.jpg" /></a> </div>
 			 */
 			Element imgEl = contentPicEls.get(0);
@@ -127,13 +160,15 @@ public class Mm131 {
 			Date date = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY_MM_dd_kk_mm_", Locale.CHINA);
 			String appedDateInfo = dateFormat.format(date);
-			String imgFileName = appedDateInfo
-					+ imgRelativeUri.substring(0, imgRelativeUri.lastIndexOf(".")) + "_"
+			String imgFileName = appedDateInfo + imgRelativeUri.substring(0, imgRelativeUri.lastIndexOf(".")) + "_"
 					+ imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
 			MainClass.saveUrlAs(imgUrl, "c:/Img/" + imgFileName);
-//					personHtmlUrl = imgNextHtmlUrl;
+			// personHtmlUrl = imgNextHtmlUrl;
 			// }
 		}
 	}
 
+	private static void print(String str) {
+		System.out.println(str);
+	}
 }

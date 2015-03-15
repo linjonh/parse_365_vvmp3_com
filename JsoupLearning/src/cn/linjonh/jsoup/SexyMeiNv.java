@@ -1,5 +1,5 @@
 /**
- * ÐÔ¸ÐÃÀÅ®Í¼°É
+ * ï¿½Ô¸ï¿½ï¿½ï¿½Å®Í¼ï¿½ï¿½
  * http://tu.meinvdd.com/meinv/
  */
 package cn.linjonh.jsoup;
@@ -56,7 +56,7 @@ public class SexyMeiNv {
 		 */
 		// lookImg(imgHtmlMapLists);
 		
-		for (int i = 1; i < pageMapLists.size() - 1; i++) {// i±éÀúÈ¥µô×îºóÒ»¸öºÍµÚÒ»¸öÖØ¸´µÄ
+		for (int i = 1; i < pageMapLists.size() - 1; i++) {// iï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Íµï¿½Ò»ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½
 			HashMap<String, String> page = pageMapLists.get(i);
 			Iterator<String> iterator=page.keySet().iterator();
 			if(iterator.hasNext()){
@@ -65,7 +65,7 @@ public class SexyMeiNv {
 
 				// System.out.println(document);
 				// System.out.println("==================================================");
-				Elements nextMainLists = document.select("div.mainlist");// Í¼Æ¬ÁÐ±í
+				Elements nextMainLists = document.select("div.mainlist");// Í¼Æ¬ï¿½Ð±ï¿½
 				Elements nextImgHtmlLists = nextMainLists.select("ul li a[href]");
 
 				ArrayList<HashMap<String, String>> nextImgHtmlMapLists = createNameValueMapLists(nextImgHtmlLists);
@@ -83,35 +83,35 @@ public class SexyMeiNv {
 	}
 
 	/**
-	 * ´´½¨½ÇÉ«Í¼Æ¬Ö÷ÌâName-htmlUrl lists
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«Í¼Æ¬ï¿½ï¿½ï¿½ï¿½Name-htmlUrl lists
 	 * 
 	 * @param imgHtmlLists
-	 *            ÐÎÈç£º<a href="http://tu.meinvdd.com/meinv/5977.html" target="_blank"><img
-	 *            alt="ÃÀÑÞÄ£ÌØÌ»ÐØÂ¶ÈéÐ´ÕæÕÕ" src="http://a.6544.cc/uploads/d131103/10571234_139_162.jpg"
-	 *            width="139" height="162" />ÃÀÑÞÄ£ÌØÌ»ÐØÂ¶ÈéÐ´ÕæÕÕ</a>
+	 *            ï¿½ï¿½ï¿½ç£º<a href="http://tu.meinvdd.com/meinv/5977.html" target="_blank"><img
+	 *            alt="ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ì»ï¿½ï¿½Â¶ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½" src="http://a.6544.cc/uploads/d131103/10571234_139_162.jpg"
+	 *            width="139" height="162" />ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ì»ï¿½ï¿½Â¶ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½</a>
 	 */
 	public static ArrayList<HashMap<String, String>> createNameValueMapLists(Elements imgHtmlLists) {
-		ArrayList<HashMap<String, String>> Items = new ArrayList<HashMap<String, String>>();// ÎªÁËºÍÍøÕ¾Ë³ÐòÒ»Ö±ÓÃlist´æ·Åmap£¬Ã¿¸ömap·ÅÒ»¸öitemÌõÄ¿
+		ArrayList<HashMap<String, String>> Items = new ArrayList<HashMap<String, String>>();// Îªï¿½Ëºï¿½ï¿½ï¿½Õ¾Ë³ï¿½ï¿½Ò»Ö±ï¿½ï¿½listï¿½ï¿½ï¿½mapï¿½ï¿½Ã¿ï¿½ï¿½mapï¿½ï¿½Ò»ï¿½ï¿½itemï¿½ï¿½Ä¿
 		for (Element el : imgHtmlLists) {
 			// <a target="_blank" href="http://www.mm131.com/xinggan/1415.html"><img
-			// src="http://img1.mm131.com/pic/1415/0.jpg" alt="±¦µºÃÀÍÈÃÀÅ®DorisË½·¿ÕÕ" width="120"
-			// height="160" />±¦µºÃÀÍÈÃÀÅ®DorisË½·¿</a>
+			// src="http://img1.mm131.com/pic/1415/0.jpg" alt="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®DorisË½ï¿½ï¿½ï¿½ï¿½" width="120"
+			// height="160" />ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®DorisË½ï¿½ï¿½</a>
 			// System.out.println(el);
 			String imgHtmlUrl = el.attr("href");
 			String imgHtmlName = el.text();
 			/*
-			 * ±¦µºÃÀÍÈÃÀÅ®DorisË½·¿==>http://www.mm131.com/xinggan/1415.html
+			 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å®DorisË½ï¿½ï¿½==>http://www.mm131.com/xinggan/1415.html
 			 */
 			// System.out.println(imgHtmlName + "==>" + imgHtmlUrl);
 			HashMap<String, String> itemMap = new HashMap<String, String>();
-			itemMap.put(imgHtmlName, imgHtmlUrl);// ¼Ç×¡°å¿éÀïµÄÄ³¸ö½ÇÉ«ÕÕÆ¬¼¯ÍøÒ³µØÖ·
-			Items.add(itemMap);// ´æ·ÅËùÓÐ½ÇÉ«µÄÍøÒ³µØÖ·
+			itemMap.put(imgHtmlName, imgHtmlUrl);// ï¿½ï¿½×¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½Ö·
+			Items.add(itemMap);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½Ö·
 		}
 		return Items;
 	}
 
 	/**
-	 * ÔÙ´´½¨ÁËname-htmlUrlºó£¬²é¿´imgÁ´½Ó
+	 * ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½name-htmlUrlï¿½ó£¬²é¿´imgï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param imgHtmlMapLists
 	 */
@@ -120,21 +120,21 @@ public class SexyMeiNv {
 			HashMap<String, String> map = imgHtmlMapLists.get(i);
 			Iterator<String> iterator = map.keySet().iterator();
 			if (iterator.hasNext()) {
-				String key = iterator.next();// ÔÚcreateNameValueMapLists·½·¨ÖÐÖ»·ÅÁËÒ»¸ökey
+				String key = iterator.next();// ï¿½ï¿½createNameValueMapListsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½key
 				String anImgHtmUrl = map.get(key);
 				Document document = ConnUtil.getHtmlDocument(anImgHtmUrl);
 				if(document!=null){
 					Elements mainPics = document.select("#oldp a[href] img");
 					// System.out.println("mainPics==>\n" + mainPics);
 					/*
-					 * ±éÀúÍ¼Æ¬²¢±£´æ
+					 * ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					 */
 					for (int j = 0; j < mainPics.size(); j++) {
 						String imgFileUrl = mainPics.get(j).attr("src");
 
 						String imgFileName = getFileName(imgFileUrl, COUNT);
 						COUNT++;
-						DonwloadUtil.DonwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
+						DonwloadUtil.donwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
 					}
 				}
 			}

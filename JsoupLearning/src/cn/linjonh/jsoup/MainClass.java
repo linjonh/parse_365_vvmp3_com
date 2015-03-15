@@ -2,6 +2,7 @@ package cn.linjonh.jsoup;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -39,7 +40,7 @@ public class MainClass {
 		Elements lists = doc.select("a[href]");
 		ArrayList<HashMap<String, String>> tempList = new ArrayList<HashMap<String, String>>();
 
-		for (int i = 1; i < lists.size(); i++) {// i³õÊ¼Îª1¹ýÂËµôµÚÒ»¸öi=0µÄ"·µ»ØÊ×Ò³"ÔªËØ
+		for (int i = 1; i < lists.size(); i++) {// iï¿½ï¿½Ê¼Îª1ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ò»ï¿½ï¿½i=0ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³"Ôªï¿½ï¿½
 			Element aElement = lists.get(i);
 			HashMap<String, String> map = new HashMap<String, String>();
 			String key = aElement.text();
@@ -68,7 +69,7 @@ public class MainClass {
 
 		Elements hrefs = tables.get(2).select("a[href]");
 
-		Element element = hrefs.get(5);// Í¼Æ¬±êÌâ
+		Element element = hrefs.get(5);// Í¼Æ¬ï¿½ï¿½ï¿½ï¿½
 		String relativeURL = element.attr("href");
 		String baseUrl = element.baseUri();
 		String text = element.ownText();
@@ -76,14 +77,14 @@ public class MainClass {
 		Document imgHtmlDoc = Jsoup.connect(baseUrl + relativeURL).get();
 		Elements imgTables = imgHtmlDoc.getElementsByTag("table");
 		Element allImgTable = imgTables.get(2);
-		Elements hrefsList = allImgTable.select("a[href]");// »ñÈ¡µÃµ½ÁËÍ¼Æ¬Ö÷ÌâµÄËùÓÐÁ´½Ó
-		System.out.println(text + "¹²" + hrefsList.size() + "Ìõ");// °æ¿éÖ÷Ìâ
+		Elements hrefsList = allImgTable.select("a[href]");// ï¿½ï¿½È¡ï¿½Ãµï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		System.out.println(text + "ï¿½ï¿½" + hrefsList.size() + "ï¿½ï¿½");// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		System.out.println("==============================");
 		HashMap<String, String> imgNameUrl = new HashMap<String, String>();
 		for (Element first : hrefsList) {
 			String aBaseUrl = first.baseUri();
-			String aHref = first.attr("href");// Ïà¶ÔµØÖ·
-			String aText = first.child(0).child(0).ownText();// ¶ÔÓ¦Ãû³Æ
+			String aHref = first.attr("href");// ï¿½ï¿½Ôµï¿½Ö·
+			String aText = first.child(0).child(0).ownText();// ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
 			// System.out.println(aText + ":" + aBaseUrl + aHref);
 			imgNameUrl.put(aText, aBaseUrl + aHref);
 		}
@@ -109,16 +110,16 @@ public class MainClass {
 			String imgName = iterator.next();
 			String imgUrl = imgNameUrl.get(imgName);
 			/*
-			 * ½âÎöÄ³Ìõ±êÌâÍ¼Æ¬¼¯
+			 * ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½
 			 */
 			Document aImgdocument = Jsoup.connect(imgUrl).get();
 			Elements lists =aImgdocument.select("img[src]");
 			/*
-			 * i³õÊ¼Îª1¹ýÂËµôµÚÒ»¸öi=0µÄ"html_titleÍ¼Æ¬"ÔªËØ ,Ìø¹ýµÚ0¸öimg[src]£¬ÒòÎªÕâÊÇ¸öhtmlÍ·Ìõ¹ã¸æ
+			 * iï¿½ï¿½Ê¼Îª1ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ò»ï¿½ï¿½i=0ï¿½ï¿½"html_titleÍ¼Æ¬"Ôªï¿½ï¿½ ,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½img[src]ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ç¸ï¿½htmlÍ·ï¿½ï¿½ï¿½ï¿½ï¿½
 			 */
 			for (int i = 1; i < lists.size(); i++) {
 				Element imgElement = lists.get(i);
-				String uri = imgElement.attr("src");// Í¼Æ¬µØÖ·£¬ÓÐÐ©ÊÂ¸ÃÍøÕ¾µÄÏà¶ÔµØÖ·£¬ÓÐÐ©ÊÇÆäËûÍøÕ¾µÄ¾ø¶ÔµØÖ·£¬ËùÒÔÒªÅÐ¶Ï
+				String uri = imgElement.attr("src");// Í¼Æ¬ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ð©ï¿½Â¸ï¿½ï¿½ï¿½Õ¾ï¿½ï¿½ï¿½ï¿½Ôµï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾ï¿½Ä¾ï¿½ï¿½Ôµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ð¶ï¿½
 				// System.out.println(aImgdocument.toString());
 				// System.out.println(imgElement.toString());
 				Date date = new Date();
@@ -129,7 +130,7 @@ public class MainClass {
 						+ uri.substring(uri.lastIndexOf("/") + 1);
 
 				if (uri.contains("http")) {
-					// Ö±½ÓURL¡£loadImage£¨£©
+					// Ö±ï¿½ï¿½URLï¿½ï¿½loadImageï¿½ï¿½ï¿½ï¿½
 					saveUrlAs(uri, "C:/Img/" + imgFileName);
 					count++;
 				} else {
@@ -145,28 +146,35 @@ public class MainClass {
 			}
 		}
 	}
-	public static boolean saveUrlAs(String fileUrl, String savePath)/* fileUrlÍøÂç×ÊÔ´µØÖ· */
+	public static boolean saveUrlAs(String fileUrl, String savePath)/* fileUrlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö· */
 	{
 
 		try {
-			URL url = new URL(fileUrl);/* ½«ÍøÂç×ÊÔ´µØÖ·´«¸ø,¼´¸³Öµ¸øurl */
-			/* ´ËÎªÁªÏµ»ñµÃÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ÓÃ·¨£¬ÒÔ±ãºóÃæµÄin±äÁ¿»ñµÃurl½ØÈ¡ÍøÂç×ÊÔ´µÄÊäÈëÁ÷ */
+			URL url = new URL(fileUrl);/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½url */
+			/* ï¿½ï¿½Îªï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½inï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½urlï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			DataInputStream in = new DataInputStream(connection.getInputStream());
-			/* ´Ë´¦Ò²¿ÉÓÃBufferedInputStreamÓëBufferedOutputStream */
-			DataOutputStream out = new DataOutputStream(new FileOutputStream(savePath));
-			/* ½«²ÎÊýsavePath£¬¼´½«½ØÈ¡µÄÍ¼Æ¬µÄ´æ´¢ÔÚ±¾µØµØÖ·¸³Öµ¸øoutÊä³öÁ÷ËùÖ¸¶¨µÄµØÖ· */
+			/* ï¿½Ë´ï¿½Ò²ï¿½ï¿½ï¿½ï¿½BufferedInputStreamï¿½ï¿½BufferedOutputStream */
+			String dirP=savePath.substring(0, savePath.lastIndexOf("/"));
+			File dir=new File(dirP);
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
+			File file = new File(savePath);
+			
+			DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
+			/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½savePathï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Í¼Æ¬ï¿½Ä´æ´¢ï¿½Ú±ï¿½ï¿½Øµï¿½Ö·ï¿½ï¿½Öµï¿½ï¿½outï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Äµï¿½Ö· */
 			byte[] buffer = new byte[4096];
 			int count = 0;
-			while ((count = in.read(buffer)) > 0)/* ½«ÊäÈëÁ÷ÒÔ×Ö½ÚµÄÐÎÊ½¶ÁÈ¡²¢Ð´ÈëbufferÖÐ */
+			while ((count = in.read(buffer)) > 0)/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Úµï¿½ï¿½ï¿½Ê½ï¿½ï¿½È¡ï¿½ï¿½Ð´ï¿½ï¿½bufferï¿½ï¿½ */
 			{
 				out.write(buffer, 0, count);
 			}
-			out.close();/* ºóÃæÈýÐÐÎª¹Ø±ÕÊäÈëÊä³öÁ÷ÒÔ¼°ÍøÂç×ÊÔ´µÄ¹Ì¶¨¸ñÊ½ */
+			out.close();/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¹Ì¶ï¿½ï¿½ï¿½Ê½ */
 			in.close();
 			connection.disconnect();
 			System.out.println(fileUrl + "\n" + savePath);
-			return true;/* ÍøÂç×ÊÔ´½ØÈ¡²¢´æ´¢±¾µØ³É¹¦·µ»Øtrue */
+			return true;/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½È¡ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½ï¿½true */
 
 		} catch (Exception e) {
 			System.out.println(e + "\n" + fileUrl + "\n" + savePath);
