@@ -3,6 +3,7 @@ package cn.linjonh.jsoup.util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -120,13 +121,13 @@ public class DonwloadUtil {
 			in.close();
 			connection.disconnect();
 			String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
-			System.out.println(log);
+			Utils.print(log);
 			writeLog(dir.getAbsolutePath(), log);
 			flag = true;
 
 		} catch (Exception e) {
 			String log = "donwload File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl + " Error: " + e;
-			System.out.println(log);
+			Utils.print(log);
 			writeLog(dir.getAbsolutePath(), log);
 			if (imageFile.delete()) {
 				Utils.print("delete file:" + imageFile.getAbsolutePath());
@@ -151,7 +152,7 @@ public class DonwloadUtil {
 	}
 
 	public static synchronized void writeLog(String dir, String log) {
-		File file = new File(dir + "/log.txt");
+		File file = new File(dir + "/logMM3.txt");
 		String time = "[" + Utils.getFormatedTime() + "]: ";
 		log = time + log + "\n";
 		try {

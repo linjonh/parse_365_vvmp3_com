@@ -1,0 +1,40 @@
+{
+    "module_list": [{
+        "name_zh": "首页",
+        "name_en": "home",
+        "module_url": "http://www.22mm.cc/"
+    }, {
+        "name_zh": "清凉美女",
+        "name_en": "qingliang",
+        "module_url": "http://www.22mm.cc/mm/qingliang/"
+    }, {
+        "name_zh": "惊艳美女",
+        "name_en": "jingyan",
+        "module_url": "http://www.22mm.cc/mm/jingyan/"
+    }, {
+        "name_zh": "惊艳美女",
+        "name_en": "jingyan",
+        "module_url": "http://www.22mm.cc/mm/bagua/"
+        "美女八卦"
+    }, {
+        "name_zh": "素人美女",
+        "name_en": "jingyan",
+        "module_url": "http://www.22mm.cc/mm/suren/"
+    }, {
+        //escaoe
+        "name_zh": "推荐图片",
+        "name_en": "recommend",
+        "module_url": "http://www.22mm.cc/mm/top/rec.html"
+    }, {
+        //escape
+        "name_zh": "精选",
+        "name_en": "picbest",
+        "module_url": "http://www.22mm.cc/mm/picbest/"
+    }],
+    "module_grids": {
+        "qingliang": [{"":"",}, {}, {}], 
+        "jingyan": [{}, {}, {}],
+        "bagua": [{}, {}, {}],
+        "suren": [{}, {}, {}]
+    }
+}

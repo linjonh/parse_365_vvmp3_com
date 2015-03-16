@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import cn.linjonh.jsoup.M22MM;
+
 import com.sun.xml.internal.ws.util.ByteArrayBuffer;
 
 public class ConnUtil {
@@ -18,13 +20,16 @@ public class ConnUtil {
 		Document document = null;
 		do {
 			try {
+				Thread.sleep(1000);
 				document = Jsoup.connect(htmlUrl)
-				// .userAgent(
-				// "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
+				 .userAgent(
+				 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
 						.get();
-				System.out.println("document connecting");
+				M22MM.print("document connected");
 			} catch (IOException e) {
-				System.out.println("document connect exception: " + e);
+				M22MM.print("document connect exception: " + e+"\ntrying connect again...");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		} while (document == null);
 		return document;
@@ -93,7 +98,7 @@ public class ConnUtil {
 	 * 
 	 * @param path
 	 */
-	private static void createDirectoysIfNeed(String path) {
+	public static void createDirectoysIfNeed(String path) {
 		int hitBackSlashIndex = path.lastIndexOf("/");
 		int hitSlashIndex = path.lastIndexOf("\\");
 		// disk path on Linux at 0, windows at 2

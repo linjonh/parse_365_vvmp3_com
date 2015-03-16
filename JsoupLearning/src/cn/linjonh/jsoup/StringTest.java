@@ -1,5 +1,9 @@
 package cn.linjonh.jsoup;
 
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import javax.print.Doc;
 
 import org.jsoup.Jsoup;
@@ -7,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
+import cn.linjonh.jsoup.util.Utils;
 
 public class StringTest {
 
@@ -36,7 +41,9 @@ public class StringTest {
 		// printStr("image url: "+html);
 		// String union = "\u70B9\u51FB\u8FDB\u5165\u4E0B\u4E00\u9875";
 		// printStr(union);
-		testSplit();
+		// testSplit();
+		ExectorTest exectorTest = new ExectorTest();
+		exectorTest.test();
 	}
 
 	private static void testSplit() {
@@ -54,5 +61,32 @@ public class StringTest {
 
 	private static void printStr(String str) {
 		System.out.println(str);
+	}
+
+	static class ExectorTest {
+		private static void print(String str) {
+			System.out.println(str);
+		}
+
+		public void test() {
+			ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 8, 1, TimeUnit.SECONDS,
+					new LinkedBlockingDeque<Runnable>());
+			for (int j = 0; j < 10; j++) {
+				print(Utils.getFormatedTime() + " =============outside for loop start");
+				final int tmpj = j;
+				for (int i = 0; i < 100; i++) {
+					final int tmp = i;
+					Thread aThread = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							print(Utils.getFormatedTime() + "----->tmpj " + tmpj + " aThread:" + tmp);
+						}
+					});
+					executor.execute(aThread);
+				}
+				print(Utils.getFormatedTime() + " ===================inner for loop end j:" + j);
+			}
+		}
 	}
 }

@@ -56,14 +56,14 @@ public class M22MM {
 			Element module = modEls.get(i);
 			final String module_url = module.attr("href");
 			final String module_name = module.html();
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
+//			new Thread(new Runnable() {
+//
+//				@Override
+//				public void run() {
 					ModuleInfoBean moduleItem = detectModulePageCount(module_url, module_name);
 					syncAddModuleInfoToList(moduleItem);
-				}
-			}).start();
+//				}
+//			}).start();
 		}
 	}
 
@@ -79,18 +79,18 @@ public class M22MM {
 	 *            total a module page count.
 	 */
 	private static void syncAddModuleInfoToList(ModuleInfoBean module_item) {
-		synchronized (lock) {
+//		synchronized (lock) {
 			if (module_item == null) {
-				lock.notify();
+//				lock.notify();
 				print("syncAddModuleInfoToList==>module_item == null");
 				return;
 			}
 			mMdoduleList.add(module_item);
 			int size = mMdoduleList.size();
-			if (size == 4) {
-				lock.notify();
-			}
-		}
+//			if (size == 4) {
+//				lock.notify();
+//			}
+//		}
 	}
 
 	/**
@@ -107,28 +107,28 @@ public class M22MM {
 	}
 
 	private static void startDownloadExecutor() {
-		synchronized (lock) {
-			try {
-				lock.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//		synchronized (lock) {
+//			try {
+//				lock.wait();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 			// TODO download image
 			for (int j = 0; j < mMdoduleList.size(); j++) {
 				final ModuleInfoBean someoneMod = mMdoduleList.get(j);
-				// Thread moduleThread = new Thread(new Runnable() {
-				//
-				// @Override
-				// public void run() {
-				for (int i = 1; i < someoneMod.pageSize; i++) {
-					visiModulePage(someoneMod, i);
-				}
-				// }
-				// });
-				// executor.execute(moduleThread);
+				Thread moduleThread = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						for (int i = 1; i < someoneMod.pageSize; i++) {
+							visiModulePage(someoneMod, i);
+						}
+					}
+				});
+				executor.execute(moduleThread);
 			}
-		}
+//		}
 	}
 
 	private static ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 8, 1, TimeUnit.SECONDS,
@@ -151,11 +151,11 @@ public class M22MM {
 	 */
 	private static ModuleInfoBean detectModulePageCount(String module_url, String module_name) {
 		print(">>>detect module url:" + module_url);
-		DonwloadUtil.writeLog(dirPath, ">>>detect module url:" + module_url + "\r\n");
 		Document doc = ConnUtil.getHtmlDocument(module_url);
 		// ShowPage element
 		Elements els = doc.select("div.ShowPage");
 		if (els.isEmpty()) {
+			print(">>>doc.select(\"div.ShowPage\") els.isEmpty() detect module url:" + module_url);
 			return null;
 		}
 		Element divPageInfo = els.get(0);
@@ -176,20 +176,11 @@ public class M22MM {
 		someone_module.pagePattren = preSuffix;
 		String log = "=====module url:=====" + module_url + "==============" + "\n[" + Utils.getFormatedTime()
 				+ "]===module name_zh: " + module_name + "===============" + "\n[" + Utils.getFormatedTime()
-				+ "]===module size:    " + someone_module.pageSize + "页==" + "\n[" + Utils.getFormatedTime()
+				+ "]===module size:    " + someone_module.pageSize + "page==" + "\n[" + Utils.getFormatedTime()
 				+ "]===module pagePattren:" + someone_module.pagePattren;
 		print(log);
-		DonwloadUtil.writeLog(dirPath, log);
 		return someone_module;
 	}
-
-	// private static void goToGridItemForFirstModulePage(Document doc) {
-	// getToGridItem(null, doc);
-	// }
-	//
-	// private static void goToGridItem(String htmlUrl) {
-	// getToGridItem(htmlUrl, null);
-	// }
 
 	private static void visiModulePage(ModuleInfoBean bean, int pageIndex) {
 		// grid
@@ -203,10 +194,13 @@ public class M22MM {
 			htmlUrl = bean.url + bean.pagePattren + pageIndex + ".html";
 		}
 		print("visi Module Page==>>> " + htmlUrl);
-		DonwloadUtil.writeLog(dirPath, "visi Module Page==>>> " + htmlUrl);
 		Document doc = ConnUtil.getHtmlDocument(htmlUrl);
 		// contain seven items of top header
 		Elements gridItems = doc.select(".c_inner .pic li a");
+		if (gridItems.isEmpty()) {
+			print("gridItems isEmpty");
+			return;
+		}
 		// print(gridItems.toString());
 		visitRoleGirdItem(bean.url, gridItems);
 	}
@@ -231,24 +225,35 @@ public class M22MM {
 	private static void visitImageItem(List<GridItemInfoBean> beans) {
 		for (int i = 0; i < beans.size(); i++) {
 			GridItemInfoBean imageItem = beans.get(i);
+			// Thread visitItemThread=new Thread(new Runnable() {
+			//
+			// @Override
+			// public void run() {
+			// TODO Auto-generated method stub
 			print("visitImageItem==>>> " + imageItem.url);
-			DonwloadUtil.writeLog(dirPath, "visitImageItem==>>> " + imageItem.url);
 			Document doc = ConnUtil.getHtmlDocument(imageItem.url);
 			Elements picItems = doc.select("div.pagelist a");
+			if (picItems.isEmpty()) {
+				print("visitImageItem==>>>picItems is Empty:Elements picItems = doc.select(\"div.pagelist a\")");
+				return;
+			}
 			/*
 			 * escape previos two item : <a
-			 * href="/mm/bagua/PmaHPdeaHeJaimbae.html">上一组</a>
+			 * href="/mm/bagua/PmaHPdeaHeJaimbae.html">previous group</a>
 			 */
 			String relativeUrlPattern = "";
 			try {
 				relativeUrlPattern = picItems.get(1).attr("href");// 通用相对地址模板
+				print(" 通用相对地址模板:" + relativeUrlPattern);
 			} catch (Exception e) {
 				String log = "EpicItems.get(1).attr(\"href\");// 通用相对地址模板" + e.toString();
 				print(log);
-				DonwloadUtil.writeLog(dirPath, log);
-				break;
+				return;
 			}
-
+			if (relativeUrlPattern.isEmpty()) {
+				print(" 通用相对地址模板: is Empty");
+				return;
+			}
 			relativeUrlPattern = relativeUrlPattern.substring(0, relativeUrlPattern.lastIndexOf("-"));
 			Elements showpages = doc.select("div.ShowPage strong");
 			String pageSize = "";
@@ -260,33 +265,54 @@ public class M22MM {
 			}
 
 			String imgFileUrl = imageItem.moduleBaseUrl + relativeUrlPattern + "-" + pageSize + ".html";
+			String log = "visit page: " + imgFileUrl;
+			print(log);
+			// get image last page to obtain script which contain all image URL.
 			Document document = ConnUtil.getHtmlDocument(imgFileUrl);
 
 			Elements els = document.select("div#box-inner script");
-			String imageUrlSript = "";
-			try {
-				imageUrlSript = els.get(1).html();
-			} catch (Exception e) {
-				DonwloadUtil.writeLog(dirPath, "Error:" + e.toString());
+			if(els.isEmpty()){
+				print("select image script is empty: div#box-inner script");
+				print("Fialed =========>imageUrlSript is empty on page:" + log);
+				return;
 			}
-
+			String imageUrlSript = els.get(1).html();
 			if (!imageUrlSript.isEmpty()) {
 				String[] tmpUrls = imageUrlSript.split(";");
 				String[] allImageItemUrls = parseImageUrl(tmpUrls);
 				for (int k = 0; k < allImageItemUrls.length; k++) {
 					final String fileName = dirPath + imageItem.name_zh + "_" + (k + 1) + ".jpg";
+
+					String tmp = imageItem.moduleBaseUrl;
+					tmp = tmp.replace("mm/", "");
+					// tmp = tmp.replace("http://", "");
+					tmp = tmp.substring(tmp.indexOf("/")).replace("/", "_");
+
+					final String fileName2 = dirPath + tmp + imageItem.name_zh + "_" + (k + 1) + ".jpg";
 					// download
-					final String url=allImageItemUrls[k];
+					final String url = allImageItemUrls[k];
+					if(url.isEmpty()){
+						break;
+					}
 					Thread moduleThread = new Thread(new Runnable() {
 
 						@Override
 						public void run() {
-							DonwloadUtil.donwloadImg(url, fileName);
+							DonwloadUtil.donwloadImg(url, fileName, fileName2);
 						}
 					});
-					executor.execute(moduleThread);
+					moduleThread.start();
+					// moduleThread.setPriority(Thread.MAX_PRIORITY);
+					// ThreadPoolExecutor executor = new ThreadPoolExecutor(4,
+					// 8, 1, TimeUnit.SECONDS,
+					// new LinkedBlockingDeque<Runnable>());
+					// executor.execute(moduleThread);
 				}
 			}
+			// }
+			// });
+			// visitItemThread.setPriority(2);
+			// executor.execute(visitItemThread);
 		}
 
 	}
@@ -311,12 +337,22 @@ public class M22MM {
 		String[] items = new String[urls.length - 2];
 
 		for (int i = 1, j = 0; i < urls.length - 1; i++, j++) {
+			
 			String imageUrl = urls[i];
+			print("parseImageUrl:"+imageUrl);
 			int first = imageUrl.indexOf("\"");
 			int last = imageUrl.lastIndexOf("\"");
-			imageUrl = imageUrl.substring(first + 1, last);
-			imageUrl = imageUrl.replace("big", "pic");
-			items[j] = imageUrl;
+			if (first != -1 && last != -1) {
+				try {
+					imageUrl = imageUrl.substring(first + 1, last);
+					imageUrl = imageUrl.replace("big", "pic");
+					items[j] = imageUrl;
+				} catch (Exception e) {
+					print("parseImageUrl Error:"+e);
+				}
+			}else{
+				items[j]="";
+			}
 		}
 		return items;
 	}
@@ -356,7 +392,9 @@ public class M22MM {
 	}
 
 	public static void print(String str) {
-		System.out.println(str);
+		String time = "[" + Utils.getFormatedTime() + "]: ";
+		System.out.println(time + str);
+		DonwloadUtil.writeLog(dirPath, str);
 	}
 
 	/**
