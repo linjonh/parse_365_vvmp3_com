@@ -1,5 +1,12 @@
+/**
+	mm2data format.
+	url lists.
+	grid pages(==>gird item).
+	image url array.
+
+*/
 {
-    "module_list": [{
+    "section_url_list": [{
         "name_zh": "首页",
         "name_en": "home",
         "module_url": "http://www.22mm.cc/"
@@ -31,10 +38,69 @@
         "name_en": "picbest",
         "module_url": "http://www.22mm.cc/mm/picbest/"
     }],
-    "module_grids": {
-        "qingliang": [{"":"",}, {}, {}], 
-        "jingyan": [{}, {}, {}],
-        "bagua": [{}, {}, {}],
-        "suren": [{}, {}, {}]
-    }
+
+    //added in code
+    "section_page_datas": {
+    	"section_qingliang_page_data":{
+    		"section_name":"qingliang",
+    		"section_page_size":21,
+    		"section_url_pattern":"index_"//for fisrt page is index.html,otherwise is index_2.html
+    	},
+    	"section_suren_page_data":{
+
+    	}
+    },
+    //added incode
+    //中间层，获取image item urls.
+    "section_grid_data": {
+
+        "section_qingliang_array": [{
+            "grid_item_name_zh": "性感美女",
+            "imageCountSize": "21",
+            "pattern": "phpjasjdfh" //used for phpjasjdfh-21.html (last page to get all image urls)
+        }, {
+            "grid_item_name_zh": "性感美女",
+            "imageCountSize": "21",
+            "pattern": "phpjasjdfh" //used for phpjasjdfh-21.html
+        }, {
+            "grid_item_name_zh": "性感美女",
+            "imageCountSize": "21",
+            "pattern": "phpjasjdfh" //used for phpjasjdfh-21.html
+        }],
+
+        "section_jingyan_array": [{}, {}, {}],
+
+        "section_bagua_array": [{}, {}, {}],
+
+        "section_suren_array": [{}, {}, {}]
+    },
+    //added in code
+    //image urls details
+    "image_item_array": [{
+            "module_name": "qingliang",
+            "image_name": "性感美女",
+            "image_url_array": [
+                "http://****.jpg",
+                "http://****.jpg",
+                "http://****.jpg",
+            ]
+        }, {
+            "module_name": "jingyan",
+            "image_name": "性感美女",
+            "image_url_array": [
+                "http://****.jpg",
+                "http://****.jpg",
+                "http://****.jpg",
+            ]
+        }, {
+            "module_name": "suren",
+            "image_name": "性感美女",
+            "image_url_array": [
+                "http://****.jpg",
+                "http://****.jpg",
+                "http://****.jpg",
+            ]
+        }
+
+    ]
 }
