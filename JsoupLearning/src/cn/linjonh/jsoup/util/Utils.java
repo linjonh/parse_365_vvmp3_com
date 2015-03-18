@@ -55,9 +55,9 @@ public class Utils {
 		return appedDateInfo;
 	}
 
-	public static String getFormatedTime(String patterItem) {
+	public static String getFormatedTime(String patternFormat) {
 		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat(patterItem, Locale.CHINA);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(patternFormat, Locale.CHINA);
 		String appedDateInfo = dateFormat.format(date);
 		return appedDateInfo;
 	}
@@ -105,7 +105,7 @@ public class Utils {
 		}
 	}
 
-	public static void writeLoopData(JSONObject json) {
+	public static void writeLoopDataToDefaultFile(JSONObject json) {
 		writeJsonDataToFile(null, json);
 	}
 
@@ -135,7 +135,19 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
+	public static JSONObject readJsonDataFromDefaultFile(){
+		String filePath = "D:/LoopPositionState/status.json"; 
+		return readJsonDataFromFile(filePath);
+	}
+	/**
+	 * 
+	 * @param filePath
+	 * @return
+	 */
 	public static JSONObject readJsonDataFromFile(String filePath) {
 		File stateFile = new File(filePath);
 		JSONObject jsonObject = null;

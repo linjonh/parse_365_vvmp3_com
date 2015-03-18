@@ -42,6 +42,7 @@
     //added in code
     "section_page_datas": {
     	"section_qingliang_page_data":{
+    		"section_url":"",
     		"section_name":"qingliang",
     		"section_page_size":21,
     		"section_url_pattern":"index_"//for fisrt page is index.html,otherwise is index_2.html

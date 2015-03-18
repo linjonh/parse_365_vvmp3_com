@@ -2,6 +2,7 @@ package cn.linjonh.jsoup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -9,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.print.Doc;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,6 +32,7 @@ public class M22MM {
 	private static String Website = "";
 	private static List<ModuleInfoBean> mMdoduleList = new ArrayList<M22MM.ModuleInfoBean>();
 	private static Object lock = new Object();
+	private static JSONObject mRootJSONObj;
 
 	/**
 	 * @param args
@@ -37,8 +42,12 @@ public class M22MM {
 		String encodeStr = ConnUtil.decode("D:/22mmdata", ConnUtil.KEYS);
 		Document doc = Jsoup.parse(encodeStr);
 		Elements modEls = doc.select("a");
-		generateModuleListInfo(modEls);
-		startDownloadExecutor();
+
+		mRootJSONObj = Utils.readJsonDataFromDefaultFile();
+		if (mRootJSONObj == null) {
+			generateModuleListInfo(modEls);
+		}
+//		startDownloadExecutor();
 	}
 
 	/**
@@ -46,6 +55,9 @@ public class M22MM {
 	 * @param modEls
 	 */
 	private static void generateModuleListInfo(Elements modEls) {
+		mRootJSONObj = new JSONObject();
+		JSONArray section_url_array = new JSONArray();
+		JSONObject section_datas = new JSONObject();
 		for (int i = 0; i < modEls.size() - 2; i++) {
 			// escape home page and last two page
 			if (i == 0) {
@@ -56,15 +68,50 @@ public class M22MM {
 			Element module = modEls.get(i);
 			final String module_url = module.attr("href");
 			final String module_name = module.html();
-//			new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
-					ModuleInfoBean moduleItem = detectModulePageCount(module_url, module_name);
-					syncAddModuleInfoToList(moduleItem);
-//				}
-//			}).start();
+			String module_name_en = module_url.replace(Website + "/mm/", "");
+			JSONObject module_array_item = new JSONObject();
+			try {
+				module_array_item.put("section_name_zh", module_name);
+				module_array_item.put("section_name_en", module_name_en);
+				module_array_item.put("section_url", module_url);
+			} catch (JSONException e) {
+				print(e.toString());
+				e.printStackTrace();
+			}
+			section_url_array.put(module_array_item);
+
+			// new Thread(new Runnable() {
+			//
+			// @Override
+			// public void run() {
+			ModuleInfoBean moduleItem = detectModulePageCount(module_url, module_name);
+			syncAddModuleInfoToList(moduleItem);
+			// }
+			// }).start();
+
+			JSONObject val = new JSONObject();
+			try {
+				val.put("section_name_zh", moduleItem.name_zh);
+				val.put("section_page_size", moduleItem.pageSize);
+				val.put("section_url", moduleItem.url);
+				val.put("section_page_url_pattern", moduleItem.pagePattren);
+				section_datas.put(module_name_en, val);
+			} catch (JSONException e) {
+				print(e.toString());
+				e.printStackTrace();
+			}
+
 		}
+
+		try {
+			mRootJSONObj.put("section_url_list", section_url_array);
+			mRootJSONObj.put("section_page_datas", section_datas);
+		} catch (JSONException e) {
+			print(e.toString());
+			e.printStackTrace();
+		}
+		
+		Utils.writeLoopDataToDefaultFile(mRootJSONObj);
 	}
 
 	/**
@@ -79,18 +126,18 @@ public class M22MM {
 	 *            total a module page count.
 	 */
 	private static void syncAddModuleInfoToList(ModuleInfoBean module_item) {
-//		synchronized (lock) {
-			if (module_item == null) {
-//				lock.notify();
-				print("syncAddModuleInfoToList==>module_item == null");
-				return;
-			}
-			mMdoduleList.add(module_item);
-			int size = mMdoduleList.size();
-//			if (size == 4) {
-//				lock.notify();
-//			}
-//		}
+		// synchronized (lock) {
+		if (module_item == null) {
+			// lock.notify();
+			print("syncAddModuleInfoToList==>module_item == null");
+			return;
+		}
+		mMdoduleList.add(module_item);
+		int size = mMdoduleList.size();
+		// if (size == 4) {
+		// lock.notify();
+		// }
+		// }
 	}
 
 	/**
@@ -107,14 +154,15 @@ public class M22MM {
 	}
 
 	private static void startDownloadExecutor() {
-//		synchronized (lock) {
-//			try {
-//				lock.wait();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
+		// synchronized (lock) {
+		// try {
+		// lock.wait();
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
 
-			// TODO download image
+		// TODO download image
+		if (mRootJSONObj == null) {// first or othere unhandled situation
 			for (int j = 0; j < mMdoduleList.size(); j++) {
 				final ModuleInfoBean someoneMod = mMdoduleList.get(j);
 				Thread moduleThread = new Thread(new Runnable() {
@@ -128,7 +176,34 @@ public class M22MM {
 				});
 				executor.execute(moduleThread);
 			}
-//		}
+		} else {
+			doVisitModule(mRootJSONObj);
+		}
+		// }
+	}
+
+	private static void doVisitModule(JSONObject obj) {
+		JSONObject sectionLists = obj.optJSONObject("section_page_datas");
+		Iterator<String> ito = sectionLists.keys();
+		while (ito.hasNext()) {
+			ModuleInfoBean bean = new ModuleInfoBean();
+			try {
+				JSONObject section = sectionLists.getJSONObject(ito.next());
+				String section_name_en = section.getString("section_name_en");
+				String section_url = section.getString("section_url");
+				int page_size = section.getInt("section_page_size");
+				String section_url_pattern = section.getString("section_page_url_pattern");
+				bean.name_zh = section_name_en;
+				bean.url = section_url;
+				bean.pagePattren = section_url_pattern;
+				bean.pageSize = page_size;
+
+				print("section_url=======>"+section_url);
+				print(section_name_en+"===="+section_url_pattern);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private static ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 8, 1, TimeUnit.SECONDS,
@@ -271,7 +346,7 @@ public class M22MM {
 			Document document = ConnUtil.getHtmlDocument(imgFileUrl);
 
 			Elements els = document.select("div#box-inner script");
-			if(els.isEmpty()){
+			if (els.isEmpty()) {
 				print("select image script is empty: div#box-inner script");
 				print("Fialed =========>imageUrlSript is empty on page:" + log);
 				return;
@@ -291,7 +366,7 @@ public class M22MM {
 					final String fileName2 = dirPath + tmp + imageItem.name_zh + "_" + (k + 1) + ".jpg";
 					// download
 					final String url = allImageItemUrls[k];
-					if(url.isEmpty()){
+					if (url.isEmpty()) {
 						break;
 					}
 					Thread moduleThread = new Thread(new Runnable() {
@@ -337,9 +412,9 @@ public class M22MM {
 		String[] items = new String[urls.length - 2];
 
 		for (int i = 1, j = 0; i < urls.length - 1; i++, j++) {
-			
+
 			String imageUrl = urls[i];
-			print("parseImageUrl:"+imageUrl);
+			print("parseImageUrl:" + imageUrl);
 			int first = imageUrl.indexOf("\"");
 			int last = imageUrl.lastIndexOf("\"");
 			if (first != -1 && last != -1) {
@@ -348,10 +423,10 @@ public class M22MM {
 					imageUrl = imageUrl.replace("big", "pic");
 					items[j] = imageUrl;
 				} catch (Exception e) {
-					print("parseImageUrl Error:"+e);
+					print("parseImageUrl Error:" + e);
 				}
-			}else{
-				items[j]="";
+			} else {
+				items[j] = "";
 			}
 		}
 		return items;
