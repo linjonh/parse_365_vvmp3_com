@@ -89,14 +89,14 @@ public class DonwloadUtil {
 		if (imageFile.exists()) {
 			String log = "Exists file: " + imageFile.getAbsolutePath();
 			Utils.print(log);
-			writeLog(dir.getAbsolutePath(), log);
+			Utils.writeLog(dir.getAbsolutePath(), log);
 			return true;
 		} else if (fileName != null) {
 			imageFile = new File(fileName);// add module name
 			if (imageFile.exists()) {
 				String log = "Exists file: " + imageFile.getAbsolutePath();
 				Utils.print(log);
-				writeLog(dir.getAbsolutePath(), log);
+				Utils.writeLog(dir.getAbsolutePath(), log);
 				return true;
 			}
 		}
@@ -122,13 +122,13 @@ public class DonwloadUtil {
 			connection.disconnect();
 			String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
 			Utils.print(log);
-			writeLog(dir.getAbsolutePath(), log);
+			Utils.writeLog(dir.getAbsolutePath(), log);
 			flag = true;
 
 		} catch (Exception e) {
 			String log = "donwload File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl + " Error: " + e;
 			Utils.print(log);
-			writeLog(dir.getAbsolutePath(), log);
+			Utils.writeLog(dir.getAbsolutePath(), log);
 			if (imageFile.delete()) {
 				Utils.print("delete file:" + imageFile.getAbsolutePath());
 			}
@@ -150,20 +150,5 @@ public class DonwloadUtil {
 			return flag;
 		}
 	}
-
-	public static synchronized void writeLog(String dir, String log) {
-		File file = new File(dir + "/logMM3.txt");
-		String time = "[" + Utils.getFormatedTime() + "]: ";
-		log = time + log + "\n";
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-			fileOutputStream.write(log.getBytes());
-			fileOutputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
+	
 }

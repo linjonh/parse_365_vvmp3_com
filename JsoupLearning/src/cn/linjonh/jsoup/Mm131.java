@@ -1,35 +1,19 @@
 package cn.linjonh.jsoup;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Base64.Encoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
-
-import com.sun.corba.se.impl.ior.ByteBuffer;
-import com.sun.org.apache.bcel.internal.generic.RET;
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
-import com.sun.xml.internal.ws.util.StringUtils;
 
 /**
  * <a href="http://www.mm131.com/">棣栭〉</a> <a

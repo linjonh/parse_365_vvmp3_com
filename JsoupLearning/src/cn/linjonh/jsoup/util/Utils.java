@@ -1,10 +1,7 @@
 package cn.linjonh.jsoup.util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -174,5 +169,30 @@ public class Utils {
 			}
 		}
 		return jsonObject;
+	}
+	
+	public static synchronized void writeLog(String dir, String log) {
+		File file = new File(dir + "/logMM3.txt");
+		createDirectoysIfNeed(dir);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String time = "[" + Utils.getFormatedTime() + "]: ";
+		log = time + log + "\n";
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+			fileOutputStream.write(log.getBytes());
+			fileOutputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
