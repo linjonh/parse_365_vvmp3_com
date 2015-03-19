@@ -20,7 +20,7 @@ public class ConnUtil {
 		Document document = null;
 		do {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(800);
 				document = Jsoup.connect(htmlUrl)
 				 .userAgent(
 				 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
@@ -28,7 +28,8 @@ public class ConnUtil {
 				M22MM.print("document connected");
 			} catch (IOException e) {
 				M22MM.print("document connect exception: " + e+"\ntrying connect again...");
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		} while (document == null);

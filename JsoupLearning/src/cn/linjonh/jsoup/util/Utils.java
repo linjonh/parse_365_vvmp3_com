@@ -172,7 +172,7 @@ public class Utils {
 	}
 	
 	public static synchronized void writeLog(String dir, String log) {
-		File file = new File(dir + "/logMM3.txt");
+		File file = new File(dir + "/logMM4.txt");
 		createDirectoysIfNeed(dir);
 		try {
 			if (!file.exists()) {

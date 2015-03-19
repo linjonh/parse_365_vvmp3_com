@@ -49,7 +49,7 @@ public class M22MM {
 		mRootJSONObj = Utils.readJsonDataFromDefaultFile();
 		if (mRootJSONObj == null) {
 			generateModuleListInfo(modEls);
-		}else{
+		} else {
 			print("mRootJSONObj is not null");
 		}
 		doWorkFlow();
@@ -349,7 +349,7 @@ public class M22MM {
 		} else {
 			htmlUrl = someoneModulBeen.url + someoneModulBeen.pagePattren + pageIndex + ".html";
 		}
-		print("visi Module Page==>>> " + htmlUrl);
+		print("page index "+pageIndex+" visi Module Page==>>> " + htmlUrl);
 		Document doc = ConnUtil.getHtmlDocument(htmlUrl);
 		// contain seven items of top header
 		Elements gridItemEls = doc.select(".c_inner .pic li a");
@@ -394,8 +394,8 @@ public class M22MM {
 	 *            gird role items of one module
 	 * @return
 	 */
-	private static JSONArray visitImageItem(List<GridItemInfoBean> beans, String moduleName) {
-		JSONArray roleImageArray = new JSONArray();
+	private static JSONArray visitImageItem(final List<GridItemInfoBean> beans, String moduleName) {
+		final JSONArray roleImageArray = new JSONArray();
 		for (int i = 0; i < beans.size(); i++) {
 			GridItemInfoBean imageItem = beans.get(i);
 			print("visitImageItem==>>> " + imageItem.url);
@@ -403,7 +403,7 @@ public class M22MM {
 			Elements picItems = doc.select("div.pagelist a");
 			if (picItems.isEmpty()) {
 				print("visitImageItem==>>>picItems is Empty:Elements picItems = doc.select(\"div.pagelist a\")");
-				return null;
+				continue;
 			}
 			/*
 			 * escape previos two item : <a
@@ -416,13 +416,19 @@ public class M22MM {
 			} catch (Exception e) {
 				String log = "EpicItems.get(1).attr(\"href\");// 通用相对地址模板" + e.toString();
 				print(log);
-				return null;
+				continue;
 			}
 			if (relativeUrlPattern.isEmpty()) {
 				print(" 通用相对地址模板: is Empty");
-				return null;
+				continue;
 			}
-			relativeUrlPattern = relativeUrlPattern.substring(0, relativeUrlPattern.lastIndexOf("-"));
+			try {
+				relativeUrlPattern = relativeUrlPattern.substring(0, relativeUrlPattern.lastIndexOf("-"));
+			} catch (Exception e) {
+				print(e.toString());
+				continue;
+			}
+
 			Elements showpages = doc.select("div.ShowPage strong");
 			String pageSize = "";
 			if (showpages.size() > 0) {
@@ -435,14 +441,15 @@ public class M22MM {
 			String imglastPageUrl = imageItem.moduleBaseUrl + relativeUrlPattern + "-" + pageSize + ".html";
 			String log = "visit page: " + imglastPageUrl;
 			print(log);
-			// get image last page to obtain script which contain all image URL.
+			// get image last page to obtain script which contain all
+			// image URL.
 			Document document = ConnUtil.getHtmlDocument(imglastPageUrl);
 
 			Elements els = document.select("div#box-inner script");
 			if (els.isEmpty()) {
 				print("select image script is empty: div#box-inner script");
 				print("Fialed =========>imageUrlSript is empty on page:" + log);
-				return null;
+				continue;
 			}
 
 			String imageUrlSript = els.get(1).html();
@@ -467,6 +474,7 @@ public class M22MM {
 					e.printStackTrace();
 				}
 			}
+
 		}
 		moduleName = beans.get(0).module_name_en;
 		return roleImageArray;
