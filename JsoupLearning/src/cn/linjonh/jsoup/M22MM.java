@@ -183,7 +183,7 @@ public class M22MM {
 				Thread moduleThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						for (int j = 0; j < list.size(); j++) {
+						for (int j = list.size()-1; j >=0 ; j--) {
 							ImageInfoBeen item = list.get(j);
 							doDownLoadImageWork(item);
 						}
@@ -194,6 +194,7 @@ public class M22MM {
 			}
 			try {
 				doneSignal.await();
+				executor.shutdown();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -552,7 +553,7 @@ public class M22MM {
 			if (first != -1 && last != -1) {
 				try {
 					imageUrl = imageUrl.substring(first + 1, last);
-					imageUrl = imageUrl.replace("big", "pic");
+					imageUrl = imageUrl.replace("/big/", "/pic/");
 					items[j] = imageUrl;
 				} catch (Exception e) {
 					print("parseImageUrl Error:" + e);
