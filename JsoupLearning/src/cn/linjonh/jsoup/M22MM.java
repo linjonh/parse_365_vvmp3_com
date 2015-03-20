@@ -3,6 +3,7 @@ package cn.linjonh.jsoup;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -41,17 +42,6 @@ public class M22MM {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// String encodeStr = encodeWebsite();
-		String encodeStr = ConnUtil.decode("D:/22mmdata", ConnUtil.KEYS);
-		Document doc = Jsoup.parse(encodeStr);
-		Elements modEls = doc.select("a");
-
-		mRootJSONObj = Utils.readJsonDataFromDefaultFile();
-		if (mRootJSONObj == null) {
-			generateModuleListInfo(modEls);
-		} else {
-			print("mRootJSONObj is not null");
-		}
 		doWorkFlow();
 	}
 
@@ -117,7 +107,7 @@ public class M22MM {
 			print(e.toString());
 			e.printStackTrace();
 		}
-		Utils.writeLoopDataToDefaultFile(mRootJSONObj);
+		// Utils.writeLoopDataToDefaultFile(mRootJSONObj);
 	}
 
 	/**
@@ -160,16 +150,55 @@ public class M22MM {
 	}
 
 	private static void doWorkFlow() {
-		// TODO download image
-		if (mRootJSONObj == null) {// first or othere unhandled situation
+		// String encodeStr = encodeWebsite();
+		String encodeStr = ConnUtil.decode("D:/22mmdata", ConnUtil.KEYS);
+		Document doc = Jsoup.parse(encodeStr);
+		Elements modEls = doc.select("a");
+
+		mRootJSONObj = Utils.readJsonDataFromDefaultFile();
+		if (mRootJSONObj == null) {
+			generateModuleListInfo(modEls);
+		} else {
+			print("mRootJSONObj is not null");
+		}
+
+		if (mRootJSONObj == null) {// first or other unhandled situation
 			doIteratorModuleWorking();
 		} else {
-			getModuleDataFromJson(mRootJSONObj);
+			/*
+			 * getModuleDataFromJson(mRootJSONObj);
+			 * 
+			 * List<List<GridItemInfoBean>> moduleItems =
+			 * parsingRoleItemArrayObjToGridItemInfoBeanList(mRootJSONObj);
+			 * doVisiItemStep(moduleItems);
+			 */
 
-			List<List<GridItemInfoBean>> moduleItems = parsingRoleItemArrayObjToGridItemInfoBeanList(mRootJSONObj);
-			doVisiItemStep(moduleItems);
+			/*
+			 * start to download image.
+			 */
+			List<List<ImageInfoBeen>> moduleItems = parseImageItemArray(mRootJSONObj);
+			final CountDownLatch doneSignal = new CountDownLatch(moduleItems.size());
+			for (int i = 0; i < moduleItems.size(); i++) {
+				final List<ImageInfoBeen> list = moduleItems.get(i);
+				Thread moduleThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						for (int j = 0; j < list.size(); j++) {
+							ImageInfoBeen item = list.get(j);
+							doDownLoadImageWork(item);
+						}
+						doneSignal.countDown();
+					}
+				});
+				executor.execute(moduleThread);
+			}
+			try {
+				doneSignal.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		Utils.writeLoopDataToDefaultFile(mRootJSONObj);
+		// Utils.writeLoopDataToDefaultFile(mRootJSONObj);
 	}
 
 	private static void doVisiItemStep(List<List<GridItemInfoBean>> moduleItems) {
@@ -349,7 +378,7 @@ public class M22MM {
 		} else {
 			htmlUrl = someoneModulBeen.url + someoneModulBeen.pagePattren + pageIndex + ".html";
 		}
-		print("page index "+pageIndex+" visi Module Page==>>> " + htmlUrl);
+		print("page index " + pageIndex + " visi Module Page==>>> " + htmlUrl);
 		Document doc = ConnUtil.getHtmlDocument(htmlUrl);
 		// contain seven items of top header
 		Elements gridItemEls = doc.select(".c_inner .pic li a");
@@ -480,33 +509,22 @@ public class M22MM {
 		return roleImageArray;
 	}
 
-	private static void doDownLoadImageWork(GridItemInfoBean imageItem, String[] allImageItemUrls, int k) {
-		final String fileName = dirPath + imageItem.name_zh + "_" + (k + 1) + ".jpg";
+	private static void doDownLoadImageWork(ImageInfoBeen imageItem) {
+		for (int i = 0; i < imageItem.image_urls.length; i++) {
+			// download
+			final String url = imageItem.image_urls[i];
+			final String fileName = dirPath + imageItem.name_zh + "_" + (i + 1) + ".jpg";
+			String tmp = imageItem.module_name_en + "_";
+			final String fileName2 = dirPath + tmp + imageItem.name_zh + "_" + (i + 1) + ".jpg";
 
-		String tmp = imageItem.moduleBaseUrl;
-		tmp = tmp.replace("mm/", "");
-		// tmp = tmp.replace("http://", "");
-		tmp = tmp.substring(tmp.indexOf("/")).replace("/", "_");
-
-		final String fileName2 = dirPath + tmp + imageItem.name_zh + "_" + (k + 1) + ".jpg";
-		// download
-		final String url = allImageItemUrls[k];
-		if (url.isEmpty()) {
-			return;
-		}
-
-		Thread moduleThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				DonwloadUtil.donwloadImg(url, fileName, fileName2);
+			if (url.isEmpty()) {
+				return;
 			}
-		});
-		moduleThread.start();
-		return;
+			DonwloadUtil.donwloadImg(url, fileName, fileName2);
+		}
 	}
 
-	private static final String dirPath = "E:/MM22/";
+	private static final String dirPath = "G:/MM22/";
 
 	/**
 	 * // <li>var arrayImg = new Array() // <li>arrayImg[0] =
@@ -557,23 +575,6 @@ public class M22MM {
 		}
 	}
 
-	private static void startDownloadImage(RoleImageInfoBeen imageBean) {
-		// for (int i = 1; i < imageBean.imgeCount; i++) {
-		// String imgFileUrl = "";
-		// if (i == 1) {
-		// /*
-		// * because image page one(PiaeddHdCCCadHCHJ.html) has no number
-		// * as page two :"PiaeddHdCCCadHCHJ-2.html";
-		// */
-		// imgFileUrl = imageBean.moduleBaseUrl + imageBean.pattern + ".html";
-		// } else {
-		// imgFileUrl = imageBean.moduleBaseUrl + imageBean.pattern + "-" + i +
-		// ".html";
-		// }
-
-		// }
-	}
-
 	private static int getImgGridCountNumber(String pageCountStr) {
 		String tmp = pageCountStr.substring(1, pageCountStr.lastIndexOf("套"));
 		// print(tmp);
@@ -619,11 +620,17 @@ public class M22MM {
 	 * @author linjianyou
 	 * 
 	 */
-	static class RoleImageInfoBeen {
-		public String pattern;
+	static class ImageInfoBeen {
 		public int imgeCount;
-		public String moduleBaseUrl;
 		public String name_zh;
+		public String[] image_urls;
+		public String module_name_en;
+
+		@Override
+		public String toString() {
+			String str = "module_name_en :" + module_name_en + " name_zh:" + name_zh + " imgeCount:" + imgeCount;
+			return str;
+		}
 	}
 
 	private static List<List<GridItemInfoBean>> parsingRoleItemArrayObjToGridItemInfoBeanList(JSONObject rootObj) {
@@ -661,5 +668,65 @@ public class M22MM {
 		}
 
 		return null;
+	}
+
+	private static List<List<ImageInfoBeen>> parseImageItemArray(JSONObject rootObj) {
+		final List<List<ImageInfoBeen>> list = new ArrayList<List<ImageInfoBeen>>();
+		try {
+			final JSONArray all_image = rootObj.getJSONArray("all_section_image_item_array");
+			final CountDownLatch doneSignal = new CountDownLatch(all_image.length());
+			ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 8, 1, TimeUnit.SECONDS,
+					new LinkedBlockingDeque<Runnable>());
+			for (int j = 0; j < all_image.length(); j++) {
+				final int index = j;
+				Thread command = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							JSONObject oneSection = all_image.getJSONObject(index);
+							String sectionName = oneSection.getString("section_name");// 待用
+							JSONArray roleArray = oneSection.getJSONArray("section_image_item_array");
+							List<ImageInfoBeen> items = new ArrayList<M22MM.ImageInfoBeen>();
+							for (int i = 0; i < roleArray.length(); i++) {
+								JSONObject jsonObject = roleArray.getJSONObject(i);
+
+								String imageName = jsonObject.getString("role_name_zh");
+								int count = jsonObject.getInt("role_image_count");
+								JSONArray imageArray = jsonObject.getJSONArray("image_url_array");
+
+								ImageInfoBeen infoBeen = new ImageInfoBeen();
+								String[] urls = new String[imageArray.length()];
+								for (int k = 0; k < imageArray.length(); k++) {
+									urls[k] = imageArray.getString(k);
+								}
+								infoBeen.image_urls = urls;
+								infoBeen.name_zh = imageName;
+								infoBeen.imgeCount = count;
+								infoBeen.module_name_en = sectionName;
+								print(infoBeen.toString());
+								items.add(infoBeen);
+							}
+							list.add(items);
+						} catch (JSONException e) {
+							print(e.toString());
+							e.printStackTrace();
+						}
+						doneSignal.countDown();
+					}
+				});
+
+				executor.execute(command);
+			}
+
+			doneSignal.await();
+			executor.shutdown();
+		} catch (JSONException e) {
+			print(e.toString());
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			print(e.toString());
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

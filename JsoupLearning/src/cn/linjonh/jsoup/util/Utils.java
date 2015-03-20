@@ -89,10 +89,10 @@ public class Utils {
 		File dir = new File(tmppath);
 		if (!dir.exists()) {
 			if (dir.mkdirs()) {
-				System.out.println("mkdirs success!");
+				System.out.println("createDirectoysIfNeed() mkdirs success!");
 				return true;
 			} else {
-				System.out.println("mkdirs failed!");
+				System.out.println("createDirectoysIfNeed() mkdirs failed!");
 				return false;
 			}
 		} else {
@@ -173,7 +173,9 @@ public class Utils {
 	
 	public static synchronized void writeLog(String dir, String log) {
 		File file = new File(dir + "/logMM4.txt");
-		createDirectoysIfNeed(dir);
+		if(!file.exists()){
+			createDirectoysIfNeed(dir);
+		}
 		try {
 			if (!file.exists()) {
 				file.createNewFile();
