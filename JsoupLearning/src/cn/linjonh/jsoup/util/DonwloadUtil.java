@@ -15,44 +15,14 @@ import java.net.URL;
 import cn.linjonh.jsoup.util.Utils;
 
 public class DonwloadUtil {
+	private static void printlog() {
 
-	// public static boolean DonwloadImg(String fileUrl, String savePath, String
-	// pageIndicate)/* fileUrl������Դ��ַ */
-	// {
-	//
-	// try {
-	// URL url = new URL(fileUrl);/* ��������Դ��ַ����,����ֵ��url */
-	// /* ��Ϊ��ϵ���������Դ�Ĺ̶���ʽ�÷����Ա�����in�������url��ȡ������Դ�������� */
-	// HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	// DataInputStream in = new DataInputStream(connection.getInputStream());
-	// /* �˴�Ҳ����BufferedInputStream��BufferedOutputStream */
-	// DataOutputStream out = new DataOutputStream(new
-	// FileOutputStream(savePath));
-	// /* ������savePath��������ȡ��ͼƬ�Ĵ洢�ڱ��ص�ַ��ֵ��out�������ָ���ĵ�ַ */
-	// byte[] buffer = new byte[4096];
-	// int count = 0;
-	// while ((count = in.read(buffer)) > 0)/* �����������ֽڵ���ʽ��ȡ��д��buffer��
-	// */
-	// {
-	// out.write(buffer, 0, count);
-	// }
-	// out.close();/* ��������Ϊ�ر�����������Լ�������Դ�Ĺ̶���ʽ */
-	// in.close();
-	// connection.disconnect();
-	// System.out.println("��" + pageIndicate + "��ҳ" + fileUrl + "\n" +
-	// savePath);
-	// return true;/* ������Դ��ȡ���洢���سɹ�����true */
-	//
-	// } catch (Exception e) {
-	// System.out.println(e + "\n" + fileUrl + "\n" + savePath);
-	// return false;
-	// }
-	// }
+	}
+
 	/**
 	 * 
 	 * @param imgFileUrl
-	 * @param dirPath1
-	 * @param fileName
+	 * @param path
 	 * @return
 	 */
 	public static boolean donwloadImg(String imgFileUrl, String path) {
@@ -184,5 +154,36 @@ public class DonwloadUtil {
 			return flag;
 		}
 	}
-
+//	/**
+//	 * 
+//	 * @param fileUrl
+//	 * @param savePath
+//	 * @param pageIndicate
+//	 * @return
+//	 */
+//	public static boolean startDonwloadImage(String fileUrl, String savePath, String pageIndicate) {
+//		Utils.createDirectoysIfNeed(savePath);
+//		try {
+//			URL url = new URL(fileUrl);
+//			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//			DataInputStream in = new DataInputStream(connection.getInputStream());
+//			DataOutputStream out = new DataOutputStream(new FileOutputStream(savePath));
+//			byte[] buffer = new byte[4096];
+//			int count = 0;
+//			while ((count = in.read(buffer)) > 0) {
+//				out.write(buffer, 0, count);
+//			}
+//			out.close();
+//			in.close();
+//			connection.disconnect();
+//			System.out.println("��" + pageIndicate + "��ҳ" + fileUrl + "\n" + savePath);
+//			String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
+//			Utils.print(log);
+//			Utils.writeLog(dir.getAbsolutePath(), log);
+//			return true;
+//		} catch (Exception e) {
+//			System.out.println(e + "\n" + fileUrl + "\n" + savePath);
+//			return false;
+//		}
+//	}
 }

@@ -45,14 +45,16 @@ public class Utils {
 
 	public static String getFormatedTime() {
 		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 		String appedDateInfo = dateFormat.format(date);
 		return appedDateInfo;
 	}
 
 	public static String getFormatedTime(String patternFormat) {
 		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat(patternFormat, Locale.CHINA);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(patternFormat,
+				Locale.CHINA);
 		String appedDateInfo = dateFormat.format(date);
 		return appedDateInfo;
 	}
@@ -120,7 +122,8 @@ public class Utils {
 		}
 		stateFile = new File(filePath);
 		try {
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(stateFile, false));
+			OutputStreamWriter out = new OutputStreamWriter(
+					new FileOutputStream(stateFile, false));
 			BufferedWriter writer = new BufferedWriter(out);
 			writer.write(json.toString());
 			writer.close();
@@ -130,14 +133,16 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * 
 	 * @return
 	 */
-	public static JSONObject readJsonDataFromDefaultFile(){
-		String filePath = "D:/LoopPositionState/status.json"; 
+	public static JSONObject readJsonDataFromDefaultFile() {
+		String filePath = "D:/LoopPositionState/status.json";
 		return readJsonDataFromFile(filePath);
 	}
+
 	/**
 	 * 
 	 * @param filePath
@@ -148,7 +153,8 @@ public class Utils {
 		JSONObject jsonObject = null;
 		if (stateFile.exists()) {
 			try {
-				InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(stateFile));
+				InputStreamReader inputStreamReader = new InputStreamReader(
+						new FileInputStream(stateFile));
 				BufferedReader reader = new BufferedReader(inputStreamReader);
 				StringBuilder builder = new StringBuilder();
 				String tmp = "";
@@ -170,11 +176,25 @@ public class Utils {
 		}
 		return jsonObject;
 	}
-	
-	public static synchronized void writeLog(String dir, String log) {
-		File file = new File(dir + "/logMM4.txt");
-		if(!file.exists()){
-			createDirectoysIfNeed(dir);
+
+	/**
+	 * write log to default logPath {@link LogPath}
+	 * 
+	 * @param log
+	 */
+	public static synchronized void writeLog(String log) {
+		writeLog(LogPath.logPath, log);
+	}
+
+	/**
+	 * 
+	 * @param logPath
+	 * @param log
+	 */
+	public static synchronized void writeLog(String logPath, String log) {
+		File file = new File(logPath + "/donwloadImgPageIndex.txt");
+		if (!file.exists()) {
+			createDirectoysIfNeed(logPath);
 		}
 		try {
 			if (!file.exists()) {
@@ -185,7 +205,8 @@ public class Utils {
 			e1.printStackTrace();
 		}
 		String time = "[" + Utils.getFormatedTime() + "]: ";
-		log = time + log + "\n";
+		// log = time + log + "\n";
+		log = log + "\n";
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file, true);
 			fileOutputStream.write(log.getBytes());

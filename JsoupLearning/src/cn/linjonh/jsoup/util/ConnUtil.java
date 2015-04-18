@@ -15,23 +15,50 @@ import cn.linjonh.jsoup.M22MM;
 import com.sun.xml.internal.ws.util.ByteArrayBuffer;
 
 public class ConnUtil {
-
+	/**
+	 * 
+	 * @param htmlUrl
+	 *            dir LogPath.logPath
+	 * @return
+	 */
 	public static Document getHtmlDocument(String htmlUrl) {
+		return getHtmlDocument(htmlUrl, LogPath.logPath);
+	}
+
+	/**
+	 * 
+	 * @param htmlUrl
+	 * @param dir
+	 *            log dir
+	 * @return
+	 */
+	public static Document getHtmlDocument(String htmlUrl, String dir) {
 		Document document = null;
 		do {
 			try {
-				Thread.sleep(800);
-				document = Jsoup.connect(htmlUrl)
-				 .userAgent(
-				 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
+				// Thread.sleep(0);
+				document = Jsoup
+						.connect(htmlUrl)
+						.userAgent(
+								"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
 						.get();
-				M22MM.print("document connected");
+				String log = "document connected";
+				Utils.print(log);
+				Utils.writeLog(dir, log);
 			} catch (IOException e) {
-				M22MM.print("document connect exception: " + e+"\ntrying connect again...");
+				String log = "htmlUrl: " + htmlUrl
+						+ "^^^\ndocument connect exception: " + e
+						+ "\ntrying connect again...";
+				Utils.print(log);
+				Utils.writeLog(dir, log);
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			// catch (InterruptedException e) {
+			// e.printStackTrace();
+			// String
+			// log="htmlUrl: "+htmlUrl+"^^^\ngetHtmlDocument InterruptedException: "+e.toString();
+			// Utils.print(log);
+			// Utils.writeLog(dir, log);
+			// }
 		} while (document == null);
 		return document;
 	}
@@ -75,7 +102,8 @@ public class ConnUtil {
 	 * @param encodekey
 	 * @param saveFileName
 	 */
-	public static void encodeString(String encodeStr, byte encodekey, String saveFileName) {
+	public static void encodeString(String encodeStr, byte encodekey,
+			String saveFileName) {
 		createDirectoysIfNeed(saveFileName);
 		int i = encodeStr.getBytes().length;
 		FileOutputStream os;
@@ -134,5 +162,5 @@ public class ConnUtil {
 	}
 
 	public static final byte KEYS = 6;
-	public static final String FileName = "D:/data";
+	public static final String FILE_DIR = "D:/data";
 }

@@ -107,7 +107,7 @@ public class M22MM {
 			print(e.toString());
 			e.printStackTrace();
 		}
-		// Utils.writeLoopDataToDefaultFile(mRootJSONObj);
+//		 Utils.writeLoopDataToDefaultFile(mRootJSONObj);
 	}
 
 	/**
@@ -585,7 +585,7 @@ public class M22MM {
 	public static void print(String str) {
 		String time = "[" + Utils.getFormatedTime() + "]: ";
 		System.out.println(time + str);
-		Utils.writeLog(dirPath, str);
+		Utils.writeLog(dirPath+ "/logMM4.txt", str);
 	}
 
 	/**
