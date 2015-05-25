@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +84,8 @@ public class DuoWwanMeinv {
 		}
 	}
 
-	public static void getAlbumsImages(String link) {
+	public static List<String> getAlbumsImages(String link) {
+		List<String> dataSets = new ArrayList<String>();
 		link = link.replace("http://tu.duowan.com/g/", "").replace(".html", "")
 				.replace("/", "");
 		// showMsg(link);
@@ -92,23 +95,45 @@ public class DuoWwanMeinv {
 			num = Integer.parseInt(link, 16);
 		} catch (Exception e) {
 		}
-		if(num==-1){
-			return;
+		if (num == -1) {
+			return dataSets;
 		}
 		String srollUrl = "http://tu.duowan.com/scroll/" + num + ".html";
 		Document doc = ConnUtil.getHtmlDocument(srollUrl);
+		if(doc==null){
+			return dataSets;
+		}
+		loadPage(doc, dataSets);
+		Elements pages = doc.select("div.mod-page");
+		if (pages != null && pages.size() > 0) {
+			showMsg(pages.toString());
+			for (Element el : pages) {
+				Elements pageLinks = el.select("a");
+				for (int i = 1; i < pageLinks.size(); i++) {
+					String pageUrl = pageLinks.get(i).attr("href");
+					srollUrl = "http://tu.duowan.com/" + pageUrl;
+					Document pagedoc = ConnUtil.getHtmlDocument(srollUrl);
+					if (pagedoc != null) {
+						loadPage(pagedoc, dataSets);
+					}
+				}
+			}
+		}
+		showMsg("size" + dataSets.size());
+		return dataSets;
+	}
+
+	private static void loadPage(Document doc, List<String> dataSets) {
 		Elements els = doc.select("div.pic-box");
+
 		BasePreviewImageData data = new BasePreviewImageData();
 		int i = 0;
 		for (Element el : els) {
 			String previewImageUrl = el.child(0).child(0).attr("src");
 			data.previewImgUrl = previewImageUrl;
-			data.title = el.child(1).text();
-			showMsg(++i + "----------------------------------");
-			showMsg(data.toString());
+			dataSets.add(previewImageUrl);
 		}
 		// showMsg(els.toString());
-
 	}
 
 	public static void showMsg(String str) {
