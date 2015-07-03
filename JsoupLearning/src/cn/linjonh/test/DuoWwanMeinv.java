@@ -73,13 +73,9 @@ public class DuoWwanMeinv {
 				data.timeline = el.select("em").text();
 				// showMsg(data.toString());
 				// getAlbumsImages(data.albumSetUrl);
-				break;
+//				break;
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
 	}
