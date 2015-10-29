@@ -1,20 +1,12 @@
 package cn.linjonh.jsoup.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Utils {
 
@@ -47,21 +39,19 @@ public class Utils {
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				"yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-		String appedDateInfo = dateFormat.format(date);
-		return appedDateInfo;
+		return dateFormat.format(date);
 	}
 
 	public static String getFormatedTime(String patternFormat) {
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat(patternFormat,
 				Locale.CHINA);
-		String appedDateInfo = dateFormat.format(date);
-		return appedDateInfo;
+		return dateFormat.format(date);
 	}
 
 	/**
 	 * create directory if not exists on Linux or windows platform
-	 * 
+	 *
 	 * @param path
 	 */
 	public static boolean createDirectoysIfNeed(String path) {
@@ -91,10 +81,10 @@ public class Utils {
 		File dir = new File(tmppath);
 		if (!dir.exists()) {
 			if (dir.mkdirs()) {
-				System.out.println("createDirectoysIfNeed() mkdirs success! filePath:"+dir.getAbsolutePath());
+				System.out.println("createDirectoysIfNeed() mkdirs success! filePath:" + dir.getAbsolutePath());
 				return true;
 			} else {
-				System.out.println("createDirectoysIfNeed() mkdirs failed! filePath:"+dir.getAbsolutePath());
+				System.out.println("createDirectoysIfNeed() mkdirs failed! filePath:" + dir.getAbsolutePath());
 				return false;
 			}
 		} else {
@@ -102,14 +92,18 @@ public class Utils {
 		}
 	}
 
+	/**
+	 *
+	 * @param json
+	 */
 	public static void writeLoopDataToDefaultFile(JSONObject json) {
 		writeJsonDataToFile(null, json);
 	}
 
 	/**
-	 * 
-	 * @param filename
-	 * @param postion
+	 *
+	 * @param filePath
+	 * @param json
 	 */
 	public static void writeJsonDataToFile(String filePath, JSONObject json) {
 		File stateFile = null;
@@ -127,15 +121,12 @@ public class Utils {
 			BufferedWriter writer = new BufferedWriter(out);
 			writer.write(json.toString());
 			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
 	public static JSONObject readJsonDataFromDefaultFile() {
@@ -144,7 +135,6 @@ public class Utils {
 	}
 
 	/**
-	 * 
 	 * @param filePath
 	 * @return
 	 */
@@ -168,8 +158,6 @@ public class Utils {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -179,7 +167,7 @@ public class Utils {
 
 	/**
 	 * write log to default logPath {@link LogPath}
-	 * 
+	 *
 	 * @param log
 	 */
 	public static synchronized void writeLog(String log) {
@@ -187,7 +175,6 @@ public class Utils {
 	}
 
 	/**
-	 * 
 	 * @param logPath
 	 * @param log
 	 */
@@ -201,18 +188,15 @@ public class Utils {
 				file.createNewFile();
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String time = "[" + Utils.getFormatedTime() + "]: ";
-		// log = time + log + "\n";
-		log = log + "\n";
+		log = time + log + "\n";
+//		log = log + "\n";
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file, true);
 			fileOutputStream.write(log.getBytes());
 			fileOutputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
