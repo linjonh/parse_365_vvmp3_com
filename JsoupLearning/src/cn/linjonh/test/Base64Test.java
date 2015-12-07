@@ -12,12 +12,12 @@ import java.util.Base64;
 public class Base64Test {
 	@MyAnnotation(name = "hi", value = "hi")
 	public static void main(String[] args) {
-		String url[] = {"UA-53846305-6", "http://bouncebreak.com/page/"};
+		String url[] = {"UA-53846305-10", "http://bouncebreak.com/page/"};
 		for (String s : url) {
 			String enStr = Base64.getEncoder().encodeToString(s.getBytes());
 			System.out.println(enStr);
-//			String decodedStr = new String(Base64.getDecoder().decode(enStr));
-//			System.out.println(decodedStr);
+			String decodedStr = new String(Base64.getDecoder().decode(enStr));
+			System.out.println(decodedStr);
 		}
 
 	}
