@@ -1,7 +1,7 @@
 package cn.linjonh.jsoup;
 
 import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
+import cn.linjonh.jsoup.util.DownloadUtil;
 import cn.linjonh.jsoup.util.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -111,7 +111,7 @@ public class XieZhengTaoTu {
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 16, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		for (String link : alinklist) {
 			if (link.contains("jpg")) {
-				// DonwloadUtil.DonwloadImg(link, filePathDir);
+				// DownloadUtil.DonwloadImg(link, filePathDir);
 				System.out.println("skip " + count++ + " images here");
 			} else {
 				// http://xz5.mm667.com/tnl45/
@@ -173,7 +173,7 @@ public class XieZhengTaoTu {
 				@Override
 				public void run() {
 					Utils.print("currentThread id " + Thread.currentThread().getId());
-					DonwloadUtil.donwloadImg(link, filePathDir, filePathDir);
+					DownloadUtil.donwloadImg(link, filePathDir, filePathDir);
 					downLatch.countDown();
 				}
 			});

@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +65,7 @@ public class DuoWwanMeinv {
 				Elements alinks = el.select("a");
 
 				showMsg(i++ + "-----------------------------------------");
-				data.previewImgUrl = alinks.select("img").attr("src");
+				data.imgPreviewUri = alinks.select("img").attr("src");
 				data.albumSetUrl = alinks.get(1).attr("href");
 				data.title = alinks.text();
 				data.timeline = el.select("em").text();
@@ -126,7 +124,7 @@ public class DuoWwanMeinv {
 		int i = 0;
 		for (Element el : els) {
 			String previewImageUrl = el.child(0).child(0).attr("src");
-			data.previewImgUrl = previewImageUrl;
+			data.imgPreviewUri = previewImageUrl;
 			dataSets.add(previewImageUrl);
 		}
 		// showMsg(els.toString());

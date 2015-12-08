@@ -1,19 +1,14 @@
 package cn.linjonh.jsoup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
-import javax.print.Doc;
-
+import cn.linjonh.jsoup.util.DownloadUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,10 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sun.org.apache.xpath.internal.operations.Div;
-
 import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
 import cn.linjonh.jsoup.util.Utils;
 
 public class M22MM {
@@ -521,7 +513,7 @@ public class M22MM {
 			if (url.isEmpty()) {
 				return;
 			}
-			DonwloadUtil.donwloadImg(url, fileName, fileName2);
+			DownloadUtil.donwloadImg(url, fileName, fileName2);
 		}
 	}
 

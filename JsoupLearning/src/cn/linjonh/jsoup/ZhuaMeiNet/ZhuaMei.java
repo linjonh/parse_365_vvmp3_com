@@ -6,7 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +45,9 @@ public class ZhuaMei {
             BasePreviewImageData data = new BasePreviewImageData();
             data.albumSetUrl = base_url + albumUrl;
             if (imgPreview.contains("http")) {
-                data.previewImgUrl = imgPreview;
+                data.imgPreviewUri = imgPreview;
             } else {
-                data.previewImgUrl = base_url + imgPreview;
+                data.imgPreviewUri = base_url + imgPreview;
             }
 
             data.title = title;

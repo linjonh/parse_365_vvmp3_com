@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,7 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
+import cn.linjonh.jsoup.util.DownloadUtil;
 
 /**
  * @author linjonh
@@ -217,7 +216,7 @@ public class CcrtYaZhou {
 
 			String fileName = ImgName + fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 			cn.linjonh.jsoup.util.Utils.writeLog("D:/ccrt/", "pageIndex:" + pageIndicate);
-			DonwloadUtil.donwloadImg(fileUrl, "D:/ccrt/" + fileName);
+			DownloadUtil.donwloadImg(fileUrl, "D:/ccrt/" + fileName);
 		}
 	}
 
