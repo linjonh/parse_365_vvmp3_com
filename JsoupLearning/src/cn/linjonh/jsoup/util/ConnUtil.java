@@ -28,11 +28,11 @@ public class ConnUtil {
 	/**
 	 * 
 	 * @param htmlUrl
-	 * @param dir
+	 * @param logDir
 	 *            log dir
 	 * @return
 	 */
-	public static Document getHtmlDocument(String htmlUrl, String dir) {
+	public static Document getHtmlDocument(String htmlUrl, String logDir) {
 		Document document = null;
 		do {
 			try {
@@ -44,13 +44,13 @@ public class ConnUtil {
 						.get();
 				String log = "document connected";
 				Utils.print(log);
-				Utils.writeLog(dir, log);
+				Utils.writeLog(logDir, log);
 			} catch (IOException e) {
 				String log = "htmlUrl: " + htmlUrl
 						+ "^^^\ndocument connect exception: " + e
 						+ "\ntrying connect again...";
 				Utils.print(log);
-				Utils.writeLog(dir, log);
+				Utils.writeLog(logDir, log);
 			}
 			// catch (InterruptedException e) {
 			// e.printStackTrace();

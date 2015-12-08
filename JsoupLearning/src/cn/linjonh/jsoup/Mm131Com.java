@@ -15,7 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
+import cn.linjonh.jsoup.util.DownloadUtil;
 
 public class Mm131Com {
 
@@ -253,7 +253,7 @@ public class Mm131Com {
 				String dirPath1 = "E:/MM131/" + imgName + "_" + imgIndexName;
 				String dirPath2 = "E:/MM131/" + moduleName + "_" + imgName + "_" + imgIndexName;
 				String url = imgBaseUrl + imgIndexName;
-				DonwloadUtil.donwloadImg(url, dirPath1, dirPath2);
+				DownloadUtil.donwloadImg(url, dirPath1, dirPath2);
 			}
 		}
 		// printStringForDebug(picGridItems.toString(), isDebug);

@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
+import cn.linjonh.jsoup.util.DownloadUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
 
 /**
  * @author linjonh
@@ -134,7 +134,7 @@ public class SexyMeiNv {
 
 						String imgFileName = getFileName(imgFileUrl, COUNT);
 						COUNT++;
-						DonwloadUtil.donwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
+						DownloadUtil.donwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
 					}
 				}
 			}

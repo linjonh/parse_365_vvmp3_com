@@ -1,9 +1,7 @@
 package cn.linjonh.jsoup;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import cn.linjonh.jsoup.util.ConnUtil;
-import cn.linjonh.jsoup.util.DonwloadUtil;
 
 public class XZtaoTu {
 
@@ -78,7 +73,7 @@ public class XZtaoTu {
 
 		for (String link : alinklist) {
 			if (link.contains("jpg")) {
-//				DonwloadUtil.DonwloadImg(link, filePathDir);
+//				DownloadUtil.DonwloadImg(link, filePathDir);
 				System.out.println("skip 29 images here");
 			} else {
 
