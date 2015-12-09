@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/parse_365_vvmp3_com.iml" filepath="$PROJECT_DIR$/.idea/parse_365_vvmp3_com.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JsoupLearning/JsoupLearning.iml" filepath="$PROJECT_DIR$/JsoupLearning/JsoupLearning.iml" />
     </modules>
   </component>
 </project>

@@ -23,10 +23,15 @@ import java.util.concurrent.TimeUnit;
  * package: cn.linjonh.jsoup.M5442
  */
 public class M5442Com {
+	private static final String path = "G:\\M5442_IMG\\";
 	//    private static String url = "http://m.5442.com";
 	private static String prefix;
 	private static int    pageCount;
 
+	/**
+	 *
+	 * @param args
+	 */
 	public static void main(String[] args) {
 //		getImageGridList().get(0);
 //		Document doc = ConnUtil.getHtmlDocument("http://m.5442.com/meinv/");
@@ -34,12 +39,19 @@ public class M5442Com {
 //		Utils.print(doc.toString());
 //		getDetailList(getImageGridList().get(0));
 //        getImageGridList("http://www.5442.com/meinv/index.html");
-
-
+		int index = 1;
+		if (args != null && args.length > 0) {
+			try {
+				index = Integer.valueOf(args[0]);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
 		getSectionPageCount();
-		for (int i = 1; i <= pageCount; i++) {
+		for (int i = index; i <= pageCount; i++) {
 			getImageGridList(i);
-			Utils.print("main loop index: "+i);
+			Utils.print("main loop index: " + i);
+			Utils.writeLog(path + "MainLoopIndexArgs/", "main loop index: " + i);
 		}
 	}
 
@@ -97,6 +109,7 @@ public class M5442Com {
 				}else {
 					downLatch.countDown();
 				}
+				Utils.print("mainList downLatch.countDown():"+downLatch.getCount());
 			}
 			try {
 				downLatch.await();
@@ -154,7 +167,7 @@ public class M5442Com {
 		CountDownLatch downLatch = new CountDownLatch(imageUrls.size());
 		for (String imageUrl : imageUrls) {
 			Thread itemThread = new Thread(() -> {
-				DownloadUtil.donwloadImg(imageUrl, "D:\\M5442_IMG\\");
+				DownloadUtil.donwloadImg(imageUrl, path);
 				downLatch.countDown();
 			});
 			executor.execute(itemThread);
