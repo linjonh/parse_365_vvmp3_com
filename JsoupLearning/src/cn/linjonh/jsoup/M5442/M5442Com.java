@@ -163,22 +163,23 @@ public class M5442Com {
 				imageUrls.remove(imageUrls.size() - 1);
 			}
 		}
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 8, 2, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-		CountDownLatch downLatch = new CountDownLatch(imageUrls.size());
+//		ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 8, 2, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+//		CountDownLatch downLatch = new CountDownLatch(imageUrls.size());
 		for (String imageUrl : imageUrls) {
 			Thread itemThread = new Thread(() -> {
 				DownloadUtil.donwloadImg(imageUrl, path);
-				downLatch.countDown();
+//				downLatch.countDown();
 			});
-			executor.execute(itemThread);
+			itemThread.start();
+//			executor.execute(itemThread);
 //			Utils.print("getDetailList:" + imageUrl);
 		}
-		try {
-			downLatch.await();
-			executor.shutdown();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			downLatch.await();
+//			executor.shutdown();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		return imageUrls;
 	}
 
