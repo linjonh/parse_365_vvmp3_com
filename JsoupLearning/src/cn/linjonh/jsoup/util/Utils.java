@@ -93,7 +93,6 @@ public class Utils {
 	}
 
 	/**
-	 *
 	 * @param json
 	 */
 	public static void writeLoopDataToDefaultFile(JSONObject json) {
@@ -101,7 +100,6 @@ public class Utils {
 	}
 
 	/**
-	 *
 	 * @param filePath
 	 * @param json
 	 */
@@ -174,22 +172,29 @@ public class Utils {
 		writeLog(LogPath.logPath, log);
 	}
 
+	public static final int SIZE_10M   = 10 * 1024 * 1024;
+	public static       int file_index = 0;
+
 	/**
 	 * @param logPath
 	 * @param log
 	 */
 	public static synchronized void writeLog(String logPath, String log) {
-		File file = new File(logPath + "/donwloadImgPageIndex.txt");
-		if (!file.exists()) {
-			createDirectoysIfNeed(logPath);
-		}
-		try {
+		File file;
+//		do {
+			file = new File(logPath + "donwloadImgPageIndex" + file_index + ".txt");
 			if (!file.exists()) {
-				file.createNewFile();
+				createDirectoysIfNeed(logPath);
 			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+			try {
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+//			file_index++;
+//		} while (file.length() > SIZE_10M);
 		String time = "[" + Utils.getFormatedTime() + "]: ";
 		log = time + log + "\n";
 //		log = log + "\n";

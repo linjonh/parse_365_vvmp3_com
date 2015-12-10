@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit;
  * package: cn.linjonh.jsoup.M5442
  */
 public class M5442Com {
-	private static final String path = "G:\\M5442_IMG\\";
+	private static final String path    = "D:\\M5442_IMG\\";
+	private static final String LogPath = path + "Log/";
 	//    private static String url = "http://m.5442.com";
 	private static String prefix;
 	private static int    pageCount;
 
 	/**
-	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -56,7 +56,7 @@ public class M5442Com {
 	}
 
 	public static int getSectionPageCount() {
-		Document doc = ConnUtil.getHtmlDocument("http://www.5442.com/meinv/");
+		Document doc = ConnUtil.getHtmlDocument("http://www.5442.com/meinv/", LogPath);
 		Elements pages = doc.select(".page a");
 		int countNum = 0;
 		if (pages != null) {
@@ -78,7 +78,7 @@ public class M5442Com {
 
 	public static List<BasePreviewImageData> getImageGridList(int pageIndex) {
 		String url = prefix + pageIndex + ".html";
-		Document document = ConnUtil.getHtmlDocument(url);
+		Document document = ConnUtil.getHtmlDocument(url, LogPath);
 		Elements mainList = document.select(".imgList li a");
 
 		ArrayList<BasePreviewImageData> list = new ArrayList<>();
@@ -103,13 +103,13 @@ public class M5442Com {
 					Thread itemThread = new Thread(() -> {
 						getDetailList(data);
 						downLatch.countDown();
-						Utils.print("downLatch.countDown():"+downLatch.getCount());
+						Utils.print("downLatch.countDown():" + downLatch.getCount());
 					});
 					executor.execute(itemThread);
-				}else {
+				} else {
 					downLatch.countDown();
 				}
-				Utils.print("mainList downLatch.countDown():"+downLatch.getCount());
+				Utils.print("mainList downLatch.countDown():" + downLatch.getCount());
 			}
 			try {
 				downLatch.await();
@@ -125,7 +125,7 @@ public class M5442Com {
 	public static List<String> getDetailList(BasePreviewImageData data) {
 		String url = data.albumSetUrl;
 //        String url = "http://www.5442.com/meinv/20151203/28969.html";
-		Document doc = ConnUtil.getHtmlDocument(url);
+		Document doc = ConnUtil.getHtmlDocument(url, LogPath);
 //        Utils.print(url);
 		Elements els = doc.select(".arcBody p img");
 		ArrayList<String> imageUrls = new ArrayList<>();
@@ -141,28 +141,48 @@ public class M5442Com {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//url
+		/**
+		 * add adopted Image url to list
+		 */
 		String templateUrl = els.get(0).attr("src");
 		String[] namePattern = parseImageNameFormat(templateUrl);
-		for (int i = 1; i <= pageCount * imgCountPerPage; i++) {
-			String name;
-			if (Boolean.parseBoolean(namePattern[2]) && i < 10) {
-				name = namePattern[0] + "0" + i + namePattern[1];
-			} else {
-				name = namePattern[0] + i + namePattern[1];
-			}
+		if (pageCount <= 0) {//详细页是否有切页码
+			for (int i = 1; i <= imgCountPerPage; i++) {
+				String name;
+				if (Boolean.parseBoolean(namePattern[2]) && i < 10) {
+					name = namePattern[0] + "0" + i + namePattern[1];
+				} else {
+					name = namePattern[0] + i + namePattern[1];
+				}
 //			Utils.print(name);
-			imageUrls.add(name);
-		}
-		String lastPageUrl = url.replace(".html", "_" + pageCount + ".html");
-		Document latPageDoc = ConnUtil.getHtmlDocument(lastPageUrl);
-		int size = latPageDoc.select(".tal img").size();
-		if (size < imgCountPerPage) {
-			int delCount = imgCountPerPage - size;
-			for (int i = 0; i < delCount; i++) {
-				imageUrls.remove(imageUrls.size() - 1);
+				imageUrls.add(name);
+			}
+		} else {
+			for (int i = 1; i <= pageCount * imgCountPerPage; i++) {
+				String name;
+				if (Boolean.parseBoolean(namePattern[2]) && i < 10) {
+					name = namePattern[0] + "0" + i + namePattern[1];
+				} else {
+					name = namePattern[0] + i + namePattern[1];
+				}
+//			Utils.print(name);
+				imageUrls.add(name);
+			}
+			//删除不存在的image url
+			String lastPageUrl = url.replace(".html", "_" + pageCount + ".html");
+			Document latPageDoc = ConnUtil.getHtmlDocument(lastPageUrl, LogPath);
+			int size = latPageDoc.select(".tal img").size();
+			if (size < imgCountPerPage) {
+				int delCount = imgCountPerPage - size;
+				for (int i = 0; i < delCount; i++) {
+					imageUrls.remove(imageUrls.size() - 1);
+				}
 			}
 		}
+
+		/**
+		 * download image
+		 */
 //		ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 8, 2, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 //		CountDownLatch downLatch = new CountDownLatch(imageUrls.size());
 		for (String imageUrl : imageUrls) {

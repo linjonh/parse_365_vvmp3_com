@@ -41,7 +41,7 @@ public class DownloadUtil {
 			if (imageFile.exists()) {
 				String log = "Exists file: " + imageFile.getAbsolutePath();
 				Utils.print(log);
-				Utils.writeLog(dir.getAbsolutePath(), log);
+				Utils.writeLog(dirPath+"Log/", log);
 				return true;
 			}
 			DataOutputStream out = null;
@@ -56,11 +56,11 @@ public class DownloadUtil {
 						connection = (HttpURLConnection) url.openConnection();
 						in = new DataInputStream(connection.getInputStream());
 						Utils.print("connected.........................imgFileUrl" + imgFileUrl);
-						Utils.writeLog(dir.getAbsolutePath(), "connected.....................imgFileUrl" + imgFileUrl);
+						Utils.writeLog(dirPath+"Log/", "connected.....................imgFileUrl" + imgFileUrl);
 						break;
 					} catch (Exception e) {
 						Utils.print("connection error:" + e.toString() + "\n^^^^^^^imgFileUrl:" + imgFileUrl);
-						Utils.writeLog(dir.getAbsolutePath(),
+						Utils.writeLog(dirPath+"Log/",
 								"connection error:" + e.toString() + "\n^^^^^^^imgFileUrl:"
 										+ imgFileUrl);
 						if (e instanceof FileNotFoundException) {
@@ -74,7 +74,7 @@ public class DownloadUtil {
 						}
 					}
 					Utils.print("connect again.........................imgFileUrl" + imgFileUrl);
-					Utils.writeLog(dir.getAbsolutePath(), "connect again.....................imgFileUrl" + imgFileUrl);
+					Utils.writeLog(dirPath+"Log/", "connect again.....................imgFileUrl" + imgFileUrl);
 				}
 				out = new DataOutputStream(new FileOutputStream(imageFile));
 
@@ -94,14 +94,14 @@ public class DownloadUtil {
 				}
 				String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
 				Utils.print(log);
-				Utils.writeLog(dir.getAbsolutePath(), log);
+				Utils.writeLog(dirPath+"Log/", log);
 				flag = true;
 
 			} catch (Exception e) {
 				error = e;
 				String log = "donwload File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl + " Error: " + e;
 				Utils.print(log);
-				Utils.writeLog(dir.getAbsolutePath(), log);
+				Utils.writeLog(dirPath+"Log/", log);
 				flag = false;
 			} finally {
 				try {
@@ -109,14 +109,14 @@ public class DownloadUtil {
 						out.close();
 				} catch (final IOException e) {
 					e.printStackTrace();
-					Utils.writeLog(dir.getAbsolutePath(), e.toString());
+					Utils.writeLog(dirPath+"Log/", e.toString());
 				}
 				try {
 					if (in != null)
 						in.close();
 				} catch (final IOException e) {
 					e.printStackTrace();
-					Utils.writeLog(dir.getAbsolutePath(), e.toString());
+					Utils.writeLog(dirPath+"Log/", e.toString());
 				}
 				try {
 					if (connection != null) {
@@ -129,10 +129,10 @@ public class DownloadUtil {
 				if (!flag) {
 					if (imageFile.delete()) {
 						Utils.print("delete file:" + imageFile.getAbsolutePath());
-						Utils.writeLog(dir.getAbsolutePath(), "delete file:" + imageFile.getAbsolutePath());
+						Utils.writeLog(dirPath+"Log/", "delete file:" + imageFile.getAbsolutePath());
 					} else {
 						Utils.print("delete file failed:" + imageFile.getAbsolutePath());
-						Utils.writeLog(dir.getAbsolutePath(), "delete file failed:" + imageFile.getAbsolutePath());
+						Utils.writeLog(dirPath+"Log/", "delete file failed:" + imageFile.getAbsolutePath());
 					}
 				}
 			}

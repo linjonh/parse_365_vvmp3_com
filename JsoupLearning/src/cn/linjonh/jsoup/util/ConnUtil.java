@@ -1,18 +1,10 @@
 package cn.linjonh.jsoup.util;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import com.sun.xml.internal.ws.util.ByteArrayBuffer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import cn.linjonh.jsoup.M22MM;
-
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
+import java.io.*;
 
 public class ConnUtil {
 	/**
@@ -42,11 +34,11 @@ public class ConnUtil {
 						.userAgent(
 								"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36")
 						.get();
-				String log = "document connected";
+				String log = "Success: document connected: " + htmlUrl;
 				Utils.print(log);
 				Utils.writeLog(logDir, log);
 			} catch (IOException e) {
-				String log = "htmlUrl: " + htmlUrl
+				String log = "Error: htmlUrl: " + htmlUrl
 						+ "^^^\ndocument connect exception: " + e
 						+ "\ntrying connect again...";
 				Utils.print(log);
