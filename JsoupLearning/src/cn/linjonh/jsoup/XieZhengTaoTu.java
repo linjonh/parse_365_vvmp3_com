@@ -28,7 +28,7 @@ public class XieZhengTaoTu {
 		System.out.println("start");
 		final Document doc = ConnUtil.getHtmlDocument(mUrl);
 		Elements alinks = doc.select("a");
-//		download(alinks, isOmei);
+		download(alinks, isOmei);
 		System.out.println(alinks);
 //		readFileFromLocal();
 //		readOmeiFileFromLocal();
