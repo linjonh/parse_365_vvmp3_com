@@ -1,11 +1,11 @@
 package cn.linjonh.jsoup.util
 
 import java.io.*
-import java.lang.IllegalStateException
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.SocketException
 import java.net.URL
+import java.net.http.HttpHeaders
 
 object DownloadUtil {
     private fun printlog() {}
@@ -21,8 +21,8 @@ object DownloadUtil {
      * @return
      */
     @JvmStatic
-    fun donwloadImg(imgFileUrl: String?, path: String?): Boolean {
-        return donwloadImg(imgFileUrl!!, path!!, null)
+    fun downloadImg(imgFileUrl: String?, path: String?): Boolean {
+        return downloadImg(imgFileUrl!!, path!!, null)
     }
 
     /**
@@ -31,8 +31,8 @@ object DownloadUtil {
      * @return
      */
     @JvmStatic
-    fun donwloadImg(imgFileUrl: String?, path: String?, fileName: String? = null): Boolean {
-        return donwloadImg(imgFileUrl!!, path!!, fileName)
+    fun downloadImg(imgFileUrl: String?, path: String?, fileName: String? = null): Boolean {
+        return downloadImg(imgFileUrl!!, path!!, fileName)
     }
 
     /**
@@ -42,12 +42,12 @@ object DownloadUtil {
      * @return
      */
     @JvmStatic
-    fun donwloadImg(
+    fun downloadImg(
         imgFileUrl: String,
         dirPath: String,
         fileName: String? = null,
         method: String? = null,
-        referer: String? = null
+        referer: String? = null, isLogHeaders: Boolean = false
     ): Boolean {
         var flag = false
         var error: Exception? = null
@@ -59,7 +59,7 @@ object DownloadUtil {
             val imageFile: File = File(getSeparatedPath(dirPath) + Utils.getFileName(imgFileUrl))
             if (imageFile.exists()) {
                 val log = "Exists file: " + imageFile.absolutePath
-                Utils.print(log)
+                Utils.print("$log $imgFileUrl")
                 Utils.writeLog(getSeparatedPath(dirPath) + "Log/", log)
                 return true
             }
@@ -76,24 +76,29 @@ object DownloadUtil {
                         }
                         if (referer != null)
                             connection.addRequestProperty("referer", referer)
-                        Utils.print("------requestProperties------")
-                        val requestProperties = connection.requestProperties
-                        for (key in requestProperties.keys){
-                            val list = requestProperties[key]!!
-                            for (s in list) {
-                                Utils.print("$key: $s")
+                        if (isLogHeaders) {
+                            Utils.print("------requestProperties------")
+                            val requestProperties = connection.requestProperties
+                            for (key in requestProperties.keys) {
+                                val list = requestProperties[key]!!
+                                for (s in list) {
+                                    Utils.print("$key: $s")
+                                }
                             }
                         }
-                        connection.connect()
-                        Utils.print("responseCode:${connection.responseCode}")
-                        val headerFields = connection.headerFields
 
-                        Utils.print("------------")
-                        val strings: Set<String> = headerFields.keys
-                        for (key in strings) {
-                            val list = headerFields[key]!!
-                            for (s in list) {
-                                Utils.print("$key: $s")
+                        connection.connect()
+
+                        Utils.print("responseCode:${connection.responseCode}")
+                        if (isLogHeaders) {
+                            val headerFields = connection.headerFields
+                            Utils.print("------------")
+                            val strings: Set<String> = headerFields.keys
+                            for (key in strings) {
+                                val list = headerFields[key]!!
+                                for (s in list) {
+                                    Utils.print("$key: $s")
+                                }
                             }
                         }
                         inputStream = DataInputStream(connection.inputStream)
@@ -183,8 +188,7 @@ object DownloadUtil {
                 Utils.printError(log)
                 Utils.writeLog(getSeparatedPath(dirPath) + "Log/", log)
                 flag = false
-            } finally
-            {
+            } finally {
                 try {
                     out?.close()
                 } catch (e: IOException) {
