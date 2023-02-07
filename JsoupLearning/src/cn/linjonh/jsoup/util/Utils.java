@@ -7,6 +7,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 public class Utils {
 
@@ -33,6 +34,11 @@ public class Utils {
 	public static void print(String str) {
 		String time = "[" + Utils.getFormatedTime() + "]: ";
 		System.out.println(time + str);
+	}
+	public static void printError(String str) {
+		String time = "[" + Utils.getFormatedTime() + "]: ";
+//		System.Logger.Level.ERROR;
+		System.getLogger("cn.linjonh.jsoup.util.LOG").log(System.Logger.Level.ERROR,time + str);
 	}
 
 	public static String getFormatedTime() {

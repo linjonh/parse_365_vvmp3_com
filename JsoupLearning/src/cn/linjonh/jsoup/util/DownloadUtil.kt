@@ -1,17 +1,18 @@
-package cn.linjonh.jsoup.util;
+package cn.linjonh.jsoup.util
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*
+import java.lang.IllegalStateException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.SocketException
+import java.net.URL
 
-public class DownloadUtil {
-    private static void printlog() {
-
+object DownloadUtil {
+    private fun printlog() {}
+    fun getSeparatedPath(dir: String): String {
+        return if (dir.endsWith("\\")) {
+            dir
+        } else dir + File.separator
     }
 
     /**
@@ -19,8 +20,19 @@ public class DownloadUtil {
      * @param path
      * @return
      */
-    public static boolean donwloadImg(String imgFileUrl, String path) {
-        return donwloadImg(imgFileUrl, path, null);
+    @JvmStatic
+    fun donwloadImg(imgFileUrl: String?, path: String?): Boolean {
+        return donwloadImg(imgFileUrl!!, path!!, null)
+    }
+
+    /**
+     * @param imgFileUrl
+     * @param path
+     * @return
+     */
+    @JvmStatic
+    fun donwloadImg(imgFileUrl: String?, path: String?, fileName: String? = null): Boolean {
+        return donwloadImg(imgFileUrl!!, path!!, fileName)
     }
 
     /**
@@ -29,127 +41,182 @@ public class DownloadUtil {
      * @param fileName
      * @return
      */
-    @SuppressWarnings("finally")
-    public static boolean donwloadImg(String imgFileUrl, String dirPath, String fileName) {
-        boolean flag = false;
-        Exception error = null;
+    @JvmStatic
+    fun donwloadImg(
+        imgFileUrl: String,
+        dirPath: String,
+        fileName: String? = null,
+        method: String? = null,
+        referer: String? = null
+    ): Boolean {
+        var flag = false
+        var error: Exception? = null
         do {
-            File imageFile;
-            File dir;
-            dir = new File(dirPath);
+            val dir: File = File(dirPath)
             if (!dir.exists()) {
-                dir.mkdir();
+                dir.mkdir()
             }
-            imageFile = new File(dirPath + "/" + Utils.getFileName(imgFileUrl));
+            val imageFile: File = File(getSeparatedPath(dirPath) + Utils.getFileName(imgFileUrl))
             if (imageFile.exists()) {
-                String log = "Exists file: " + imageFile.getAbsolutePath();
-                Utils.print(log);
-                Utils.writeLog(dirPath + "Log/", log);
-                return true;
+                val log = "Exists file: " + imageFile.absolutePath
+                Utils.print(log)
+                Utils.writeLog(getSeparatedPath(dirPath) + "Log/", log)
+                return true
             }
-            DataOutputStream out = null;
-            DataInputStream in = null;
-            HttpURLConnection connection = null;
-
-
+            var out: DataOutputStream? = null
+            var inputStream: DataInputStream? = null
+            var connection: HttpURLConnection? = null
             try {
-                URL url = new URL(imgFileUrl);
-                while (in == null) {
+                val url = URL(imgFileUrl)
+                while (inputStream == null) {
                     try {
-                        connection = (HttpURLConnection) url.openConnection();
-                        connection.connect();
-                        connection.getResponseCode();
-                        Map<String, List<String>> headerFields = connection.getHeaderFields();
-                        Set<String> strings = headerFields.keySet();
-                        for (String key : strings) {
-                            List<String> list = headerFields.get(key);
-                            for (String s : list) {
-                                Utils.print("key:" + key + " values:" + s);
+                        connection = url.openConnection() as HttpURLConnection
+                        if (method != null) {
+                            connection.addRequestProperty("method", method)
+                        }
+                        if (referer != null)
+                            connection.addRequestProperty("referer", referer)
+                        Utils.print("------requestProperties------")
+                        val requestProperties = connection.requestProperties
+                        for (key in requestProperties.keys){
+                            val list = requestProperties[key]!!
+                            for (s in list) {
+                                Utils.print("$key: $s")
                             }
                         }
-                        in = new DataInputStream(connection.getInputStream());
-                        Utils.print("connected.........................imgFileUrl" + imgFileUrl);
-                        Utils.writeLog(dirPath + "Log/", "connected.....................imgFileUrl" + imgFileUrl);
-                        break;
-                    } catch (Exception e) {
-                        Utils.print("connection error:" + e.toString() + "\n^^^^^^^imgFileUrl:" + imgFileUrl);
-                        Utils.writeLog(dirPath + "Log/",
-                                "connection error:" + e.toString() + "\n^^^^^^^imgFileUrl:"
-                                        + imgFileUrl);
-                        if (e instanceof FileNotFoundException) {
-                            break;
+                        connection.connect()
+                        Utils.print("responseCode:${connection.responseCode}")
+                        val headerFields = connection.headerFields
+
+                        Utils.print("------------")
+                        val strings: Set<String> = headerFields.keys
+                        for (key in strings) {
+                            val list = headerFields[key]!!
+                            for (s in list) {
+                                Utils.print("$key: $s")
+                            }
                         }
-                        if (e instanceof MalformedURLException) {
-                            break;
+                        inputStream = DataInputStream(connection.inputStream)
+                        Utils.print("connected.........................imgFileUrl$imgFileUrl")
+                        Utils.writeLog(
+                            getSeparatedPath(dirPath) + "Log/",
+                            "connected.....................imgFileUrl$imgFileUrl"
+                        )
+                        break
+                    } catch (e: Exception) {
+                        Utils.printError("connection error:$e\n^^^^^^^imgFileUrl:$imgFileUrl")
+                        Utils.writeLog(
+                            getSeparatedPath(dirPath) + "Log/",
+                            """
+                                connection error:$e
+                                ^^^^^^^imgFileUrl:$imgFileUrl
+                                """.trimIndent()
+                        )
+
+                        try {
+                            connection?.disconnect()
+                        } catch (e2: Exception) {
+                            Utils.writeLog(dir.absolutePath, e2.toString())
+                            e2.printStackTrace()
                         }
-                        if (e instanceof NullPointerException) {
-                            break;
+                        if (!flag) {
+                            if (imageFile.delete()) {
+                                Utils.print("delete file:" + imageFile.absolutePath)
+                                Utils.writeLog(
+                                    getSeparatedPath(dirPath) + "Log/",
+                                    "delete file:" + imageFile.absolutePath
+                                )
+                            } else {
+                                Utils.print("delete file failed:" + imageFile.absolutePath)
+                                Utils.writeLog(
+                                    getSeparatedPath(dirPath) + "Log/",
+                                    "delete file failed:" + imageFile.absolutePath
+                                )
+                            }
+                        }
+
+                        if (e is FileNotFoundException) {
+                            break
+                        }
+                        if (e is MalformedURLException) {
+                            break
+                        }
+                        if (e is NullPointerException) {
+                            break
+                        }
+                        if (e.message.equals("Already connected")) {
+                            break
                         }
                     }
-                    Utils.print("connect again.........................imgFileUrl" + imgFileUrl);
-                    Utils.writeLog(dirPath + "Log/", "connect again.....................imgFileUrl" + imgFileUrl);
+                    Utils.printError("connect again.........................imgFileUrl$imgFileUrl")
+                    Utils.writeLog(
+                        getSeparatedPath(dirPath) + "Log/", "connect again.....................imgFileUrl$imgFileUrl"
+                    )
                 }
-                out = new DataOutputStream(new FileOutputStream(imageFile));
-
-                byte[] buffer = new byte[4096];
-                int count = 0;
-//                while ((count = in.read(buffer)) > 0) {
-//                    out.write(buffer, 0, count);
-//                }
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                String log = "save File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl;
-                Utils.print(log);
-                Utils.writeLog(dirPath + "Log/", log);
-                flag = true;
-
-            } catch (Exception e) {
-                error = e;
-                String log = "donwload File: " + imageFile.getAbsolutePath() + " URL: " + imgFileUrl + " Error: " + e;
-                Utils.print(log);
-                Utils.writeLog(dirPath + "Log/", log);
-                flag = false;
-            } finally {
-                try {
-                    if (out != null)
-                        out.close();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    Utils.writeLog(dirPath + "Log/", e.toString());
-                }
-                try {
-                    if (in != null)
-                        in.close();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    Utils.writeLog(dirPath + "Log/", e.toString());
-                }
-                try {
-                    if (connection != null) {
-                        connection.disconnect();
+                inputStream?.let {
+                    out = DataOutputStream(FileOutputStream(imageFile))
+                    val buffer = ByteArray(4096)
+                    var count = 0
+                    while (true) {
+                        count = inputStream.read(buffer)
+                        if (count > 0) {
+                            out!!.write(buffer, 0, count);
+                        } else {
+                            break
+                        }
                     }
-                } catch (Exception e2) {
-                    Utils.writeLog(dir.getAbsolutePath(), e2.toString());
-                    e2.printStackTrace();
+
+                    if (out != null) {
+                        out!!.close()
+                    }
+                    inputStream?.close()
+                    connection?.disconnect()
+                    val log = "save File: " + imageFile.absolutePath + " URL: " + imgFileUrl
+                    Utils.print(log)
+                    Utils.writeLog(getSeparatedPath(dirPath) + "Log/", log)
+                    flag = true
+                }
+                if (inputStream == null) flag = false
+            } catch (e: Exception) {
+                error = e
+                val log = "donwload File: " + imageFile.absolutePath + " URL: " + imgFileUrl + " Error: " + e
+                Utils.printError(log)
+                Utils.writeLog(getSeparatedPath(dirPath) + "Log/", log)
+                flag = false
+            } finally
+            {
+                try {
+                    out?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Utils.writeLog(getSeparatedPath(dirPath) + "Log/", e.toString())
+                }
+                try {
+                    inputStream?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Utils.writeLog(getSeparatedPath(dirPath) + "Log/", e.toString())
                 }
                 if (!flag) {
                     if (imageFile.delete()) {
-                        Utils.print("delete file:" + imageFile.getAbsolutePath());
-                        Utils.writeLog(dirPath + "Log/", "delete file:" + imageFile.getAbsolutePath());
+                        Utils.print("delete file:" + imageFile.absolutePath)
+                        Utils.writeLog(getSeparatedPath(dirPath) + "Log/", "delete file:" + imageFile.absolutePath)
                     } else {
-                        Utils.print("delete file failed:" + imageFile.getAbsolutePath());
-                        Utils.writeLog(dirPath + "Log/", "delete file failed:" + imageFile.getAbsolutePath());
+                        Utils.print("delete file failed:" + imageFile.absolutePath)
+                        Utils.writeLog(
+                            getSeparatedPath(dirPath) + "Log/",
+                            "delete file failed:" + imageFile.absolutePath
+                        )
                     }
                 }
             }
-        } while (error != null && error instanceof SocketException);
-        return flag;
+            try {
+                connection?.disconnect()
+            } catch (e2: Exception) {
+                Utils.writeLog(dir.absolutePath, e2.toString())
+                e2.printStackTrace()
+            }
+        } while (error != null && error is SocketException)
+        return flag
     }
 }
