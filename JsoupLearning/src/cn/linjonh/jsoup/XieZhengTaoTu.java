@@ -173,7 +173,7 @@ public class XieZhengTaoTu {
 				@Override
 				public void run() {
 					Utils.print("currentThread id " + Thread.currentThread().getId());
-					DownloadUtil.donwloadImg(link, filePathDir, filePathDir);
+					DownloadUtil.downloadImg(link, filePathDir, filePathDir);
 					downLatch.countDown();
 				}
 			});

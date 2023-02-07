@@ -513,7 +513,7 @@ public class M22MM {
 			if (url.isEmpty()) {
 				return;
 			}
-			DownloadUtil.donwloadImg(url, fileName, fileName2);
+			DownloadUtil.downloadImg(url, fileName, fileName2);
 		}
 	}
 

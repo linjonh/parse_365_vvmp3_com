@@ -187,7 +187,7 @@ public class M5442Com {
 //		CountDownLatch downLatch = new CountDownLatch(imageUrls.size());
 		for (String imageUrl : imageUrls) {
 			Thread itemThread = new Thread(() -> {
-				DownloadUtil.donwloadImg(imageUrl, path);
+				DownloadUtil.downloadImg(imageUrl, path);
 //				downLatch.countDown();
 			});
 			itemThread.start();

@@ -134,7 +134,7 @@ public class SexyMeiNv {
 
 						String imgFileName = getFileName(imgFileUrl, COUNT);
 						COUNT++;
-						DownloadUtil.donwloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
+						DownloadUtil.downloadImg(imgFileUrl, "C:/Img/" + imgFileName, key);
 					}
 				}
 			}

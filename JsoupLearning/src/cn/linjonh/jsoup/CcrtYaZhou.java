@@ -216,7 +216,7 @@ public class CcrtYaZhou {
 
 			String fileName = ImgName + fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 			cn.linjonh.jsoup.util.Utils.writeLog("D:/ccrt/", "pageIndex:" + pageIndicate);
-			DownloadUtil.donwloadImg(fileUrl, "D:/ccrt/" + fileName);
+			DownloadUtil.downloadImg(fileUrl, "D:/ccrt/" + fileName);
 		}
 	}
 

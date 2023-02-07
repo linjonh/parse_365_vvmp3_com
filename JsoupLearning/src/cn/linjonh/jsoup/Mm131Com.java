@@ -239,7 +239,7 @@ public class Mm131Com {
                 String dirPath1 = "E:/MM131/" + imgName + "_" + imgIndexName;
                 String dirPath2 = "E:/MM131/" + moduleName + "_" + imgName + "_" + imgIndexName;
                 String url = imgBaseUrl + imgIndexName;
-                DownloadUtil.donwloadImg(url, dirPath1, dirPath2);
+                DownloadUtil.downloadImg(url, dirPath1, dirPath2);
             }
         }
         // printStringForDebug(picGridItems.toString(), isDebug);
